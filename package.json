@@ -1,0 +1,21 @@
+{
+  "name": "framer-landing-page-copy",
+  "version": "1.0.0",
+  "description": "Pixel-perfect copy of Framer landing page (https://humble-presentation-759960.framer.app/)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "preview": "node server.js --dist"
+  },
+  "keywords": [
+    "framer",
+    "landing-page",
+    "clone",
+    "cashif"
+  ],
+  "author": "",
+  "license": "ISC"
+}

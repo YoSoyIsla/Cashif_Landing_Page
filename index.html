@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="tr" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cashif · Finansta kaybolma, cashif’le keşfet</title>
+  <meta name="description" content="Gençler ve yeni nesil için interaktif finans eğitimi, borsa simülatörü ve görevlerle yatırım deneyimi.">
+  <link rel="icon" type="image/svg+xml" href="./Logo_Icon.svg">
+  <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
+  <link rel="apple-touch-icon" href="./Logo_Icon.svg">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- ======================================================================
+       HEADER / NAVBAR (Fixed, Full-Width with Centered Content)
+       ====================================================================== -->
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="#" class="brand-logo" aria-label="Cashif Ana Sayfa">
+        <svg viewBox="0 0 1024 512" preserveAspectRatio="xMinYMid meet" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" class="navbar-animated-logo">
+  <style>
+    .logo-arrow {
+      transform: translate(212.334px, 269.044px);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
+      will-change: transform, opacity;
+    }
+    .logo-base {
+      transform: translate(211.185px, 264.552px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+    }
+    .brand-logo:hover .logo-arrow,
+    .brand-logo.is-hovered .logo-arrow,
+    .navbar-animated-logo:hover .logo-arrow {
+      transform: translate(253.223px, 245.489px);
+      opacity: 1;
+    }
+    .brand-logo:hover .logo-base,
+    .brand-logo.is-hovered .logo-base,
+    .navbar-animated-logo:hover .logo-base {
+      transform: translate(169.436px, 287.91px);
+    }
+  </style>
+
+  <!-- Cashif Brand Text -->
+  <g transform="matrix(0.41,0,0,0.41,391.165,156.849)" id="i3"><g id="i4" transform="matrix(1,0,0,1,697.879,205.469)"><path fill="#000000" fill-rule="evenodd" d="M-696.867,56.943C-696.867,10.757,-679.497,-28.266,-649.979,-54.013C-613.321,-85.99,-570.581,-87.444,-556.27,-87.197C-546.914,-87.037,-493.972,-86.123,-458.867,-45.436C-448.213,-33.089,-442.234,-20.592,-438.827,-11.702C-458.142,-0.551,-477.456,10.599,-496.769,21.75C-497.72,17.046,-502.778,-5.472,-523.692,-18.595C-537.69,-27.378,-551.752,-27.534,-556.862,-27.534C-598.213,-27.534,-623.615,6.729,-623.615,56.352C-623.615,56.352,-623.615,58.715,-623.615,58.715C-623.615,107.747,-600.576,142.6,-558.633,142.6C-553.086,142.6,-537.329,142.762,-521.772,132.696C-500.544,118.96,-495.267,96.44,-494.222,91.458C-475.795,102.097,-457.367,112.736,-438.94,123.375C-442.473,133.794,-449.69,150.572,-464.657,166.164C-498.461,201.387,-544.447,202.072,-557.452,202.266C-569.992,202.452,-613.899,202.432,-651.16,169.989C-697.629,129.532,-696.867,70.645,-696.867,56.943ZM-156.116,20.908C-156.116,20.908,-156.116,147.916,-156.116,147.916C-156.116,147.916,-156.116,196.948,-156.116,196.948C-156.116,196.948,-225.232,196.948,-225.232,196.948C-225.232,196.948,-225.232,196.948,-225.232,196.948C-225.232,196.948,-225.232,159.141,-225.232,159.141C-242.955,187.495,-275.445,204.038,-316.796,204.038C-376.461,204.038,-413.678,171.547,-413.678,123.106C-413.678,60.487,-366.419,45.72,-304.392,32.721C-254.767,22.679,-227.592,19.726,-224.64,5.546C-224.345,2.609,-224.221,-2.789,-226.757,-8.621C-229.595,-15.144,-234.241,-18.724,-236.825,-20.665C-252.872,-32.722,-278.764,-30.508,-282.039,-30.193C-288.678,-29.553,-311.598,-27.013,-331.748,-8.529C-343.18,1.958,-349.16,13.398,-352.159,20.403C-370.696,9.702,-389.233,-1.001,-407.77,-11.702C-402.013,-23.6,-388.447,-47.404,-361.159,-65.418C-329.317,-86.439,-297.749,-87.063,-280.4,-87.173C-255.211,-87.331,-209.68,-87.667,-179.941,-53.368C-155.668,-25.373,-155.642,9.496,-156.116,20.908ZM-224.642,58.125C-224.642,58.125,-224.642,58.125,-224.642,58.125C-241.181,67.577,-267.765,72.302,-290.213,77.619C-317.977,85.299,-340.425,94.161,-340.425,119.562C-340.425,138.466,-325.658,152.052,-300.256,152.052C-264.221,152.052,-227.004,134.33,-224.642,82.344C-224.642,82.344,-224.642,58.125,-224.642,58.125ZM-129.331,146.144C-103.337,180.997,-59.623,205.219,-2.913,205.219C62.659,205.219,111.1,165.639,111.1,113.064C111.1,56.352,56.161,37.449,5.949,27.997C-43.082,18.544,-58.441,15.591,-58.441,-3.313C-58.441,-20.444,-41.31,-31.667,-15.909,-31.667C11.857,-31.667,35.996,-21.209,50.764,1.83C50.764,1.83,105.864,-29.982,105.864,-29.982C78.69,-66.61,38.44,-88.378,-17.09,-88.378C-79.117,-88.378,-127.559,-48.8,-127.559,2.004C-127.559,57.534,-78.527,76.438,-30.678,85.888C10.083,94.75,40.802,98.295,40.802,118.378C40.802,136.693,25.444,147.916,-1.141,147.916C-29.496,147.916,-56.685,134.343,-72.044,113.076C-72.044,113.076,-129.331,146.144,-129.331,146.144ZM139.384,-200.619C139.384,-200.619,139.384,196.948,139.384,196.948C139.384,196.948,210.273,196.948,210.273,196.948C210.273,196.948,210.273,55.171,210.273,55.171C210.273,2.596,231.54,-25.761,266.393,-25.761C300.656,-25.761,316.015,-5.675,316.015,33.905C316.015,33.905,316.015,196.948,316.015,196.948C316.015,196.948,388.676,196.948,388.676,196.948C388.676,196.948,388.676,29.177,388.676,29.177C388.676,-47.026,352.641,-87.197,291.795,-87.197C251.034,-87.197,224.451,-67.702,210.273,-32.259C210.273,-32.259,210.273,-200.619,210.273,-200.619C210.273,-200.619,139.384,-200.619,139.384,-200.619ZM431.385,-81.881C431.385,-81.881,431.385,196.948,431.385,196.948C431.385,196.948,504.638,196.948,504.638,196.948C504.638,196.948,504.638,-81.881,504.638,-81.881C504.638,-81.881,431.385,-81.881,431.385,-81.881ZM682.27,-138.001C682.27,-138.001,697.629,-138.001,697.629,-138.001C697.629,-138.001,697.629,-201.21,697.629,-201.21C697.629,-201.21,650.37,-201.21,650.37,-201.21C591.888,-197.667,571.802,-171.673,571.802,-103.737C571.802,-103.737,571.802,-81.881,571.802,-81.881C571.802,-81.881,571.802,-81.881,571.802,-81.881C571.802,-81.881,528.679,-81.881,528.679,-81.881C528.679,-81.881,528.679,-22.217,528.679,-22.217C528.679,-22.217,571.802,-22.217,571.802,-22.217C571.802,-22.217,571.802,196.948,571.802,196.948C571.802,196.948,642.69,196.948,642.69,196.948C642.69,196.948,642.69,-22.217,642.69,-22.217C642.69,-22.217,697.629,-22.217,697.629,-22.217C697.629,-22.217,697.629,-81.881,697.629,-81.881C697.629,-81.881,642.69,-81.881,642.69,-81.881C642.69,-81.881,642.69,-81.881,642.69,-81.881C642.69,-81.881,642.69,-97.831,642.69,-97.831C642.69,-136.228,647.416,-138.001,682.27,-138.001ZM468.012,-205.219C445.631,-205.219,427.488,-187.075,427.488,-164.696C427.488,-142.316,445.631,-124.173,468.012,-124.173C490.391,-124.173,508.534,-142.316,508.534,-164.696C508.534,-187.075,490.391,-205.219,468.012,-205.219Z" /></g></g>
+
+  <!-- Mint Arrow (Full Unrestricted Vector Path) -->
+  <g class="logo-arrow">
+    <g transform="scale(0.41,0.41) translate(-254.691,-334.124)">
+      <g transform="matrix(1,0,0,1,254.691,334.124)">
+        <path fill="#08deaa" d="M19.977,333.873C19.977,333.873,133.952,268.076,133.952,268.076C141.317,263.826,146.684,256.818,148.873,248.602C148.873,248.602,250.723,-133.893,250.723,-133.893C254.441,-147.862,248.332,-162.589,235.816,-169.822C235.816,-169.822,-38.135,-328.149,-38.135,-328.149C-48.035,-333.871,-60.238,-333.873,-70.139,-328.155C-70.139,-328.155,-191.9,-259.515,-191.9,-259.515C-191.9,-259.515,35.483,-171.453,35.483,-171.453C48.808,-163.766,48.808,-144.521,35.483,-136.823C35.483,-136.823,-233.446,18.436,-233.446,18.436C-246.433,25.934,-254.441,39.8,-254.441,54.807C-254.441,54.807,-254.441,219.883,-254.441,219.883C-254.441,238.349,-234.446,249.895,-218.45,240.657C-218.45,240.657,9.489,109.062,9.489,109.062C25.485,99.825,45.48,111.372,45.48,129.838C45.48,129.838,19.977,333.873,19.977,333.873Z" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Indigo Base Shape -->
+  <g class="logo-base">
+    <g transform="scale(0.41,0.41) translate(-253.518,-383.013)">
+      <g transform="matrix(1,0,0,1,253.518,383.013)">
+        <path fill="#371aee" d="M-29.991,375.62C-29.991,375.62,229.938,225.552,229.938,225.552C242.311,218.409,249.933,205.207,249.933,190.92C249.933,190.92,249.933,24.686,249.933,24.686C249.933,6.215,229.938,-5.329,213.942,3.906C213.942,3.906,-13.995,135.506,-13.995,135.506C-29.991,144.741,-49.985,133.197,-49.985,114.727C-49.985,114.727,-49.985,-50.35,-49.985,-50.35C-49.985,-65.351,-41.982,-79.213,-28.991,-86.714C-28.991,-86.714,239.938,-241.978,239.938,-241.978C253.267,-249.673,253.268,-268.913,239.938,-276.609C239.938,-276.609,65.981,-377.048,65.981,-377.048C56.083,-382.763,43.888,-382.763,33.989,-377.048C33.989,-377.048,-239.938,-218.896,-239.938,-218.896C-253.268,-211.2,-253.268,-191.96,-239.938,-184.264C-239.938,-184.264,-94.634,-100.371,-94.634,-100.371C-78.638,-91.136,-78.638,-68.048,-94.634,-58.813C-94.634,-58.813,-229.94,19.305,-229.94,19.305C-242.313,26.449,-249.935,39.65,-249.935,53.937C-249.935,53.937,-249.935,248.637,-249.935,248.637C-249.935,262.923,-242.313,276.125,-229.94,283.269C-229.94,283.269,-69.98,375.62,-69.98,375.62C-57.607,382.763,-42.364,382.763,-29.991,375.62Z" />
+      </g>
+    </g>
+  </g>
+</svg>
+      </a>
+
+      <button id="menu-toggle" class="menu-toggle" aria-label="Menüyü Aç" aria-expanded="false">
+        <span class="menu-line"></span>
+        <span class="menu-line"></span>
+      </button>
+
+      <nav id="nav-links" class="nav-links">
+        <a href="#" class="nav-link">Şirket</a>
+        <a href="#" class="nav-link">Uygulama</a>
+        <a href="#" class="nav-link">İletişim</a>
+        <a href="#" class="btn-primary">Kayıt Ol</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-container">
+
+    <!-- ====================================================================
+         HERO SECTION (12-Column Grid Layout)
+         ==================================================================== -->
+    <section class="hero-section grid-container">
+      <div class="hero-intro">
+        <!-- Columns 1 to 6: Main Headline (Occupies 6 Columns) -->
+        <div class="hero-title-box">
+          <h1 class="hero-title">
+            <span class="hero-title-line">Finansta kaybolma,</span>
+            <span class="hero-title-line text-primary">cashif’le keşfet.</span>
+          </h1>
+        </div>
+
+        <!-- Columns 7 to 8: Negative Space Spacer -->
+        <div class="hero-grid-spacer" aria-hidden="true"></div>
+
+        <!-- Columns 9 to 12: Introduction & Primary CTA -->
+        <div class="hero-desc-box">
+          <p class="hero-description">
+            Hız değil sabır ve irade. Kurgusal borsa simülatörü ve niş oyunlaştırmayla adım adım ustalaş.
+          </p>
+          <div class="hero-action">
+            <a href="#" class="btn-accent">
+              Hemen Keşfet
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spans all 12 Columns: Solid #1E1E1E Box -->
+      <div class="hero-visual-card"></div>
+    </section>
+
+    <!-- ====================================================================
+         PARTNERS SECTION (Reverted SVGs across 12 Columns)
+         ==================================================================== -->
+    <section class="partners-section grid-container">
+      <div class="partners-row">
+        <div class="partner-logo-item">
+          <img src="./assets/images/wpmEmUY6hSHaaSx5pwxY7f8DRs.svg" alt="Biruni Teknopark" width="200" height="62" loading="lazy">
+        </div>
+        <div class="partner-logo-item">
+          <img src="./assets/images/0pk5nff3JbJrGVoYYlFwChpRU.svg" alt="İstanbul Büyükşehir Belediyesi" width="180" height="70" loading="lazy">
+        </div>
+        <div class="partner-logo-item">
+          <img src="./assets/images/Jd7OfdjH7YQX4NB7PRLFNqq6nG8.svg" alt="Bilgiyi Ticarileştirme Merkezi" width="150" height="66" loading="lazy">
+        </div>
+        <div class="partner-logo-item">
+          <img src="./assets/images/yV3yEgHCTZsDJlTNg8RFvPZESvA.svg" alt="Tech İstanbul" width="192" height="53" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         PLATFORM OVERVIEW & FEATURES (Full-Bleed Blue #371aee Background)
+         ==================================================================== -->
+    <section class="platform-section">
+      <div class="grid-container">
+        <!-- Overview Heading (Centered) -->
+        <div class="platform-header">
+          <h2 class="section-h1">Borsa simülatöründen bağımsız, sabır ve iradeye dayalı yeni nesil oyunlaştırma.</h2>
+          <p class="section-subtitle">Galápagos kaplumbağası metaforuyla kurgulanmış 14 niş mekanik, 5 modüler eğitim adası ve kurgusal piyasa simülasyonları. Finansal geleceğini bilgi ve tutarlılıkla inşa et.</p>
+          <a href="#" class="btn-accent">Mekanikleri İncele</a>
+        </div>
+
+        <!-- Sticky Split-Scroll Feature Showcase (Pinned Left Media, Scrolling Right Steps) -->
+        <div class="platform-showcase">
+          <!-- Sticky Left Media Column (Cols 1 to 6) -->
+          <div class="showcase-sticky-col">
+            <div class="showcase-card-stack">
+              <!-- Card 1: Solid White Box #ffffff -->
+              <div class="showcase-card card-fill-white active" data-card="0"></div>
+              <!-- Card 2: Solid Mint Box #08deaa -->
+              <div class="showcase-card card-fill-mint" data-card="1"></div>
+              <!-- Card 3: Solid Dark Box #1E1E1E -->
+              <div class="showcase-card card-fill-dark" data-card="2"></div>
+            </div>
+          </div>
+
+          <!-- Scrolling Right Steps Column (Cols 7 to 12) -->
+          <div class="showcase-steps-col">
+            <!-- Step 1 -->
+            <div class="showcase-step active" data-step="0">
+              <h3 class="feature-title">Sürpriz Yumurta & Kâşif Defteri</h3>
+              <p class="feature-body">Her modül ve haftalık görevde açılan kaplumbağa yumurtasından CashifCoin ve nadir kartlar çıkar. Öğrendiğin bileşik faiz, fırsat maliyeti ve çeşitlendirme kavramları Panini tarzı Kâşif Defteri'ne eklenir.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="showcase-step" data-step="1">
+              <h3 class="feature-title">Kurgusal Borsa & Olay-Tepki Motoru</h3>
+              <p class="feature-body">Solaris Enerji ve Zirve İnşaat gibi kurgusal şirketlerle piyasanın neden-sonuç bağını çöz. Dinamik haberleri analiz et, FOMO tuzaklarından kaçın ve 'Zamanı İleri Sar' ile kararlarının getirisini anında gör.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="showcase-step" data-step="2">
+              <h3 class="feature-title">Kabuk Kumbarası & Bekle Kuralı</h3>
+              <p class="feature-body">Bütçe Planlayıcı'da verdiğin her rasyonel karar kabuğundaki kumbarada sanal altın gramına dönüşür. Dürtüsel harcamalarda 24 saat bekleme sayacını çalıştır; sabırlı kaldıkça ekstra XP ve ödül kazan.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         DYNAMIC MORPHING CURVE DIVIDER (Purple to Green Section)
+         ==================================================================== -->
+    <div class="curve-divider-wrapper" id="purple-green-curve" aria-hidden="true">
+      <svg class="curve-divider-svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path id="curve-path" d="M 0,0 Q 720,130 1440,0 L 1440,120 L 0,120 Z" fill="#08deaa"></path>
+      </svg>
+    </div>
+
+    <!-- ====================================================================
+         GREEN STORIES SECTION (Full-Bleed Mint Green #08deaa Background)
+         ==================================================================== -->
+    <section class="stories-green-section">
+      <div class="grid-container">
+        <!-- Customer Introduction Title -->
+        <div class="customer-intro-header">
+          <h2 class="customer-intro-title">Sabırla biriktir, akılla yatırım yap: Cashif ekosistemini keşfet.</h2>
+        </div>
+
+        <!-- Story 1 (Niş Oyunlaştırma) (Cols 1-5 Text | Cols 7-12 Media) -->
+        <div class="story-row">
+          <div class="story-col-text">
+            <span class="badge-label">Niş Oyunlaştırma</span>
+            <h3 class="story-heading">Tavşan ile Yarış & Aylık Pati İzi</h3>
+            <p class="story-desc">Aceleci ve riskli kararlar veren Tavşan NPC'ye karşı Galápagos kaplumbağasının sabrıyla yarış. Katı streak kaygısı olmadan her aktif gün haritada bir pati izine dönüşür; kaçırılan bir gün motivasyonunu yıkmaz.</p>
+            <div>
+              <a href="#" class="btn-primary">Yarışa Katıl</a>
+            </div>
+          </div>
+          <div class="story-col-media">
+            <!-- Solid Blue Box #371aee -->
+            <div class="story-main-card card-blue"></div>
+            <div class="story-pair-grid">
+              <!-- Solid Dark Box #1E1E1E -->
+              <div class="story-pair-item card-dark"></div>
+              <!-- Solid White Box #ffffff -->
+              <div class="story-pair-item card-white"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story 2 (Finansal Savunma) (Reversed: Cols 1-6 Media | Cols 8-12 Text) -->
+        <div class="story-row reversed">
+          <div class="story-col-media">
+            <!-- Solid Dark Box #1E1E1E -->
+            <div class="story-main-card card-dark"></div>
+            <div class="story-pair-grid">
+              <!-- Solid Blue Box #371aee -->
+              <div class="story-pair-item card-blue"></div>
+              <!-- Solid White Box #ffffff -->
+              <div class="story-pair-item card-white"></div>
+            </div>
+          </div>
+          <div class="story-col-text">
+            <span class="badge-label">Finansal Savunma</span>
+            <h3 class="story-heading">Monokl Taraması & Dolandırıcılık Kalkanı</h3>
+            <p class="story-desc">Sahte SMS, ilan ve 'garantili kazanç' vaatlerindeki kırmızı bayrakları büyüteçle yakala. Cleo ilhamlı esprili Monokl Modu ile bütçe kararlarına anlık geri bildirim al, dolandırıcılık tuzaklarına karşı bağışıklık kazan.</p>
+            <div>
+              <a href="#" class="btn-primary">Taramayı Başlat</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story 3 (Kazan-Kazan) (Cols 1-5 Text | Cols 7-12 Media) -->
+        <div class="story-row">
+          <div class="story-col-text">
+            <span class="badge-label">Kazan-Kazan Modeli</span>
+            <h3 class="story-heading">Sertifikalar ve Gerçek Nakit İade (Cashback)</h3>
+            <p class="story-desc">5 modüler adayı ve Boss Fight'ları (Harcama Canavarı, Panik Satan, Faiz Sülüğü) tamamla. SPK lisanslı aracı kurumlar ve bankalarda ilk adımını atarken, platform komisyon gelirini cüzdanına gerçek nakit olarak iade alsın.</p>
+            <div>
+              <a href="#" class="btn-primary">Modeli Keşfet</a>
+            </div>
+          </div>
+          <div class="story-col-media">
+            <!-- Solid Blue Box #371aee -->
+            <div class="story-main-card card-blue"></div>
+            <div class="story-pair-grid">
+              <!-- Solid White Box #ffffff -->
+              <div class="story-pair-item card-white"></div>
+              <!-- Solid Dark Box #1E1E1E -->
+              <div class="story-pair-item card-dark"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story 4 (Topluluk & Ligler) (Reversed: Cols 1-6 Media | Cols 8-12 Text) -->
+        <div class="story-row reversed">
+          <div class="story-col-media">
+            <!-- Solid Dark Box #1E1E1E -->
+            <div class="story-main-card card-dark"></div>
+            <div class="story-pair-grid">
+              <!-- Solid White Box #ffffff -->
+              <div class="story-pair-item card-white"></div>
+              <!-- Solid Blue Box #371aee -->
+              <div class="story-pair-item card-blue"></div>
+            </div>
+          </div>
+          <div class="story-col-text">
+            <span class="badge-label">Topluluk & Ligler</span>
+            <h3 class="story-heading">Asırlık Sezon, Sürü Havuzu ve Söz Kumbarası</h3>
+            <p class="story-desc">Dev kaplumbağaların asırlık ömründen ilham alan Asırlık Sezon'da elitlerle yarış. 3-5 kişilik Sürü Havuzu ile ortak coin hedeflerine koş, Söz Kumbarası'nda hedefine coin kilitleyerek iradeni somut bir taahhüde çevir.</p>
+            <div>
+              <a href="#" class="btn-primary">Lige Katıl</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         CALL TO ACTION SECTION (White #ffffff Background)
+         ==================================================================== -->
+    <section class="cta-section">
+      <div class="grid-container">
+        <div class="cta-banner">
+          <h2 class="cta-title">Finansal iradeni kabuğundan çıkar, sabırla büyü.</h2>
+          <a href="#" class="btn-primary">Cashif'e Katıl</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         FOOTER (#1E1E1E Dark Card within Desktop Columns)
+         ==================================================================== -->
+    <footer class="footer-wrapper">
+      <div class="grid-container">
+        <div class="footer-card">
+          <div class="footer-grid-row">
+            <!-- Left Group (Columns 1 to 6) -->
+            <div class="footer-left-col">
+              <div class="footer-brand-box">
+                <img src="./assets/images/7zENZoJ3lsfva79wGJ06ryhgwSs.svg" alt="Cashif Logo" class="footer-logo-img" width="130" height="48">
+              </div>
+
+              <div class="footer-copyright">
+                <p>Copyright © Cashif | Sunan:</p>
+                <p>Cashif Finansal Teknolojiler A.Ş.</p>
+              </div>
+
+              <div class="footer-nav-links">
+                <a href="#" class="footer-text-link">Yasal Bildirimler</a>
+                <a href="#" class="footer-text-link">SSS</a>
+              </div>
+            </div>
+
+            <!-- Right Group (Columns 9 to 12) -->
+            <div class="footer-right-col">
+              <a href="mailto:hello@cashifapp.com" class="footer-email-link">hello@cashifapp.com</a>
+              <p class="footer-tagline">Hız Değil İrade. Sabırla Öğren, Cashif’le Büyü.</p>
+
+              <div class="footer-social-icons">
+                <!-- TikTok -->
+                <a href="#" class="footer-social-link" aria-label="TikTok">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.88 2.89 2.89 0 0 1-2.89-2.88 2.89 2.89 0 0 1 2.89-2.89c.35 0 .69.06 1 .17V9.43a6.34 6.34 0 0 0-1-.08A6.33 6.33 0 0 0 3.16 15.68a6.34 6.34 0 0 0 6.33 6.32 6.34 6.34 0 0 0 6.34-6.32V9.08a8.27 8.27 0 0 0 4.76 1.48V7.11a4.85 4.85 0 0 1-1-.42z"/>
+                  </svg>
+                </a>
+                <!-- X (Twitter) -->
+                <a href="#" class="footer-social-link" aria-label="X">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+                <!-- Instagram -->
+                <a href="#" class="footer-social-link" aria-label="Instagram">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                  </svg>
+                </a>
+                <!-- LinkedIn -->
+                <a href="#" class="footer-social-link" aria-label="LinkedIn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Interactive 12-Column Grid Overlay & Toggle -->
+  <div id="grid-overlay" class="active" aria-hidden="true">
+    <div class="grid-col-guide" data-col="1" data-label="1"></div>
+    <div class="grid-col-guide" data-col="2" data-label="2"></div>
+    <div class="grid-col-guide" data-col="3" data-label="3"></div>
+    <div class="grid-col-guide" data-col="4" data-label="4"></div>
+    <div class="grid-col-guide" data-col="5" data-label="5"></div>
+    <div class="grid-col-guide" data-col="6" data-label="6"></div>
+    <div class="grid-col-guide is-spacer" data-col="7" data-label="7 (Spacer)"></div>
+    <div class="grid-col-guide is-spacer" data-col="8" data-label="8 (Spacer)"></div>
+    <div class="grid-col-guide" data-col="9" data-label="9"></div>
+    <div class="grid-col-guide" data-col="10" data-label="10"></div>
+    <div class="grid-col-guide" data-col="11" data-label="11"></div>
+    <div class="grid-col-guide" data-col="12" data-label="12"></div>
+  </div>
+  <button id="grid-toggle-btn" class="is-active" title="Toggle 12-Column Desktop Grid Overlay (Alt+G)">
+    <span class="grid-btn-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+    <span class="grid-btn-label">12-Col Grid: ON</span>
+    <span class="grid-btn-shortcut">Alt+G</span>
+  </button>
+
+  <script src="./main.js"></script>
+</body>
+</html>

@@ -402,7 +402,9 @@ function initWishlistForms() {
     });
 
     function showError(message) {
-      input.classList.add('has-error');
+      if (!input.classList.contains('has-error')) {
+        input.classList.add('has-error');
+      }
       input.focus();
       if (feedback) {
         feedback.className = 'form-feedback error';

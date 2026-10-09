@@ -73,7 +73,6 @@
       </button>
 
       <nav id="nav-links" class="nav-links">
-        <a href="#" class="nav-link">Şirket</a>
         <a href="#" class="nav-link">Uygulama</a>
         <a href="#" class="nav-link">İletişim</a>
         <a href="#" class="btn-primary">Kayıt Ol</a>
@@ -102,12 +101,13 @@
         <!-- Columns 9 to 12: Introduction & Primary CTA -->
         <div class="hero-desc-box">
           <p class="hero-description">
-            Hız değil sabır ve irade. Kurgusal borsa simülatörü ve niş oyunlaştırmayla adım adım ustalaş.
+            Hız değil, sabır ve irade. Oyunlaştırılmış derslerle her gün biraz daha ilerle, öğrendiklerini uygulayarak pekiştir.
           </p>
           <div class="hero-action">
-            <a href="#" class="btn-accent">
-              Hemen Keşfet
-            </a>
+            <form class="wishlist-form" onsubmit="event.preventDefault(); alert('İstek listesine eklendi!');">
+              <input type="email" placeholder="E-posta adresin" class="wishlist-input" required>
+              <button type="submit" class="btn-accent wishlist-btn">İstek Listesine Ekle</button>
+            </form>
           </div>
         </div>
       </div>
@@ -121,12 +121,6 @@
          ==================================================================== -->
     <section class="partners-section grid-container">
       <div class="partners-row">
-        <div class="partner-logo-item">
-          <img src="./assets/images/wpmEmUY6hSHaaSx5pwxY7f8DRs.svg" alt="Biruni Teknopark" width="200" height="62" loading="lazy">
-        </div>
-        <div class="partner-logo-item">
-          <img src="./assets/images/0pk5nff3JbJrGVoYYlFwChpRU.svg" alt="İstanbul Büyükşehir Belediyesi" width="180" height="70" loading="lazy">
-        </div>
         <div class="partner-logo-item">
           <img src="./assets/images/Jd7OfdjH7YQX4NB7PRLFNqq6nG8.svg" alt="Bilgiyi Ticarileştirme Merkezi" width="150" height="66" loading="lazy">
         </div>
@@ -143,8 +137,8 @@
       <div class="grid-container">
         <!-- Overview Heading (Centered) -->
         <div class="platform-header">
-          <h2 class="section-h1">Borsa simülatöründen bağımsız, sabır ve iradeye dayalı yeni nesil oyunlaştırma.</h2>
-          <p class="section-subtitle">Galápagos kaplumbağası metaforuyla kurgulanmış 14 niş mekanik, 5 modüler eğitim adası ve kurgusal piyasa simülasyonları. Finansal geleceğini bilgi ve tutarlılıkla inşa et.</p>
+          <h2 class="section-h1">Finansal okuryazarlık, günlük bir alışkanlığa dönüşüyor.</h2>
+          <p class="section-subtitle">cashif, karmaşık finans konularını kısa derslere ve uygulamalı araçlara dönüştürür. Öğrendiğin her bilgiyi hemen deneme fırsatı bulursun.</p>
           <a href="#" class="btn-accent">Mekanikleri İncele</a>
         </div>
 
@@ -166,21 +160,23 @@
           <div class="showcase-steps-col">
             <!-- Step 1 -->
             <div class="showcase-step active" data-step="0">
-              <h3 class="feature-title">Sürpriz Yumurta & Kâşif Defteri</h3>
-              <p class="feature-body">Her modül ve haftalık görevde açılan kaplumbağa yumurtasından CashifCoin ve nadir kartlar çıkar. Öğrendiğin bileşik faiz, fırsat maliyeti ve çeşitlendirme kavramları Panini tarzı Kâşif Defteri'ne eklenir.</p>
+              <h3 class="feature-title">İhtiyacın olan konuyla başla</h3>
+              <p class="feature-body">Bütçe yönetiminden kripto varlıklara kadar beş bölümün her biri bağımsız ilerler. İlgini çeken konuyu seçer, kısa derslerle adım adım ilerlersin.</p>
             </div>
 
             <!-- Step 2 -->
             <div class="showcase-step" data-step="1">
-              <h3 class="feature-title">Kurgusal Borsa & Olay-Tepki Motoru</h3>
-              <p class="feature-body">Solaris Enerji ve Zirve İnşaat gibi kurgusal şirketlerle piyasanın neden-sonuç bağını çöz. Dinamik haberleri analiz et, FOMO tuzaklarından kaçın ve 'Zamanı İleri Sar' ile kararlarının getirisini anında gör.</p>
+              <h3 class="feature-title">Kararlarını simülasyonda dene</h3>
+              <p class="feature-body">Kurgusal şirketlerin hisselerinde işlem yaparsın. Haberler fiyatları etkiler ve verdiğin kararın sonucunu gerçek riske girmeden görürsün.</p>
             </div>
 
             <!-- Step 3 -->
             <div class="showcase-step" data-step="2">
-              <h3 class="feature-title">Kabuk Kumbarası & Bekle Kuralı</h3>
-              <p class="feature-body">Bütçe Planlayıcı'da verdiğin her rasyonel karar kabuğundaki kumbarada sanal altın gramına dönüşür. Dürtüsel harcamalarda 24 saat bekleme sayacını çalıştır; sabırlı kaldıkça ekstra XP ve ödül kazan.</p>
+              <h3 class="feature-title">Öğrendiklerini avantaja çevir</h3>
+              <p class="feature-body">Bir bölümü tamamladığında dijital sertifikanı alırsın. Seçili iş ortaklarımızın ürün ve hizmetlerinde sana özel avantajlardan yararlanabilirsin.</p>
             </div>
+
+            <p class="showcase-note" style="margin-top: 24px; font-size: 14px; color: #888; font-style: italic;">Simülasyonlar eğitim amaçlıdır, yatırım tavsiyesi içermez.</p>
           </div>
         </div>
       </div>
@@ -208,9 +204,9 @@
         <!-- Story 1 (Niş Oyunlaştırma) (Cols 1-5 Text | Cols 7-12 Media) -->
         <div class="story-row">
           <div class="story-col-text">
-            <span class="badge-label">Niş Oyunlaştırma</span>
-            <h3 class="story-heading">Tavşan ile Yarış & Aylık Pati İzi</h3>
-            <p class="story-desc">Aceleci ve riskli kararlar veren Tavşan NPC'ye karşı Galápagos kaplumbağasının sabrıyla yarış. Katı streak kaygısı olmadan her aktif gün haritada bir pati izine dönüşür; kaçırılan bir gün motivasyonunu yıkmaz.</p>
+            <span class="badge-label">Deneyim</span>
+            <h3 class="story-heading">Her gün öğrenmek için yeni bir neden</h3>
+            <p class="story-desc">Düzenli girdikçe serin uzar ve Mint kazanırsın. Kazandığın Mint’lerle maskotunu ve profilini kendine göre düzenlersin. İlerlemen hem görünür hem keyifli hale gelir.</p>
             <div>
               <a href="#" class="btn-primary">Yarışa Katıl</a>
             </div>
@@ -240,58 +236,16 @@
             </div>
           </div>
           <div class="story-col-text">
-            <span class="badge-label">Finansal Savunma</span>
-            <h3 class="story-heading">Monokl Taraması & Dolandırıcılık Kalkanı</h3>
-            <p class="story-desc">Sahte SMS, ilan ve 'garantili kazanç' vaatlerindeki kırmızı bayrakları büyüteçle yakala. Cleo ilhamlı esprili Monokl Modu ile bütçe kararlarına anlık geri bildirim al, dolandırıcılık tuzaklarına karşı bağışıklık kazan.</p>
+            <span class="badge-label">Topluluk</span>
+            <h3 class="story-heading">Arkadaşlarınla birlikte ilerle</h3>
+            <p class="story-desc">Haftalık liglerde puan topla, arkadaşlarını takip et ve üniversiteni sıralamada temsil et. Biraz sağlıklı rekabet, öğrenmeye devam etmeyi kolaylaştırır.</p>
             <div>
               <a href="#" class="btn-primary">Taramayı Başlat</a>
             </div>
           </div>
         </div>
 
-        <!-- Story 3 (Kazan-Kazan) (Cols 1-5 Text | Cols 7-12 Media) -->
-        <div class="story-row">
-          <div class="story-col-text">
-            <span class="badge-label">Kazan-Kazan Modeli</span>
-            <h3 class="story-heading">Sertifikalar ve Gerçek Nakit İade (Cashback)</h3>
-            <p class="story-desc">5 modüler adayı ve Boss Fight'ları (Harcama Canavarı, Panik Satan, Faiz Sülüğü) tamamla. SPK lisanslı aracı kurumlar ve bankalarda ilk adımını atarken, platform komisyon gelirini cüzdanına gerçek nakit olarak iade alsın.</p>
-            <div>
-              <a href="#" class="btn-primary">Modeli Keşfet</a>
-            </div>
-          </div>
-          <div class="story-col-media">
-            <!-- Solid Blue Box #371aee -->
-            <div class="story-main-card card-blue"></div>
-            <div class="story-pair-grid">
-              <!-- Solid White Box #ffffff -->
-              <div class="story-pair-item card-white"></div>
-              <!-- Solid Dark Box #1E1E1E -->
-              <div class="story-pair-item card-dark"></div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Story 4 (Topluluk & Ligler) (Reversed: Cols 1-6 Media | Cols 8-12 Text) -->
-        <div class="story-row reversed">
-          <div class="story-col-media">
-            <!-- Solid Dark Box #1E1E1E -->
-            <div class="story-main-card card-dark"></div>
-            <div class="story-pair-grid">
-              <!-- Solid White Box #ffffff -->
-              <div class="story-pair-item card-white"></div>
-              <!-- Solid Blue Box #371aee -->
-              <div class="story-pair-item card-blue"></div>
-            </div>
-          </div>
-          <div class="story-col-text">
-            <span class="badge-label">Topluluk & Ligler</span>
-            <h3 class="story-heading">Asırlık Sezon, Sürü Havuzu ve Söz Kumbarası</h3>
-            <p class="story-desc">Dev kaplumbağaların asırlık ömründen ilham alan Asırlık Sezon'da elitlerle yarış. 3-5 kişilik Sürü Havuzu ile ortak coin hedeflerine koş, Söz Kumbarası'nda hedefine coin kilitleyerek iradeni somut bir taahhüde çevir.</p>
-            <div>
-              <a href="#" class="btn-primary">Lige Katıl</a>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -301,8 +255,14 @@
     <section class="cta-section">
       <div class="grid-container">
         <div class="cta-banner">
-          <h2 class="cta-title">Finansal iradeni kabuğundan çıkar, sabırla büyü.</h2>
-          <a href="#" class="btn-primary">Cashif'e Katıl</a>
+          <h2 class="cta-title">Finansta kaybolma, cashif’le keşfet.</h2>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 24px;">
+            <form class="wishlist-form" onsubmit="event.preventDefault(); alert('İstek listesine eklendi!');" style="justify-content: center;">
+              <input type="email" placeholder="E-posta adresin" class="wishlist-input" required>
+              <button type="submit" class="btn-primary wishlist-btn" style="border-radius: 100px;">Bekleme listesine katıl</button>
+            </form>
+            <p style="font-size: 14px; color: #666;">Lansman tarihini ilk sen öğren.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -333,7 +293,7 @@
 
             <!-- Right Group (Columns 9 to 12) -->
             <div class="footer-right-col">
-              <a href="mailto:hello@cashifapp.com" class="footer-email-link">hello@cashifapp.com</a>
+              <a href="mailto:info@cashif.app" class="footer-email-link">info@cashif.app</a>
               <p class="footer-tagline">Hız Değil İrade. Sabırla Öğren, Cashif’le Büyü.</p>
 
               <div class="footer-social-icons">

@@ -270,6 +270,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Smooth scroll and focus on email input when clicking wishlist buttons
+  document.querySelectorAll('a[href="#hero-wishlist"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById('hero-wishlist');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const input = target.querySelector('.wishlist-input');
+        if (input) {
+          setTimeout(() => input.focus(), 600);
+        }
+      }
+    });
+  });
+
   // Initialize interactive navbar logo touch support
   initNavbarLogoInteraction();
 });

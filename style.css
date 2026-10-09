@@ -160,7 +160,7 @@ button {
   top: 0;
   left: 0;
   right: 0;
-  width: 100vw;
+  width: 100%;
   z-index: 1000;
   background-color: var(--color-white);
   border-bottom: none;
@@ -289,6 +289,13 @@ button {
   color: var(--color-white);
 }
 
+.btn-primary:active,
+.btn-accent:active,
+.wishlist-btn:active {
+  transform: scale(0.97) !important;
+  opacity: 0.92;
+}
+
 /* 3. Button on Purple (#371aee) Background (Platform Section) */
 .platform-section .btn-accent {
   background-color: var(--color-accent);
@@ -381,14 +388,14 @@ button {
   color: var(--color-primary);
 }
 
-/* Spacer (Columns 7 to 8 - Negative Space) */
+/* Spacer (Column 7 - Negative Space) */
 .hero-grid-spacer {
-  grid-column: 7 / 9;
+  grid-column: 7 / 8;
 }
 
-/* Right Group (Columns 9 to 12 - Correlates & Aligns Top and Bottom with Left Headline) */
+/* Right Group (Columns 8 to 12 - 5 Columns for balanced form width) */
 .hero-desc-box {
-  grid-column: 9 / 13;
+  grid-column: 8 / 13;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -435,24 +442,40 @@ button {
   z-index: 1;
 }
 
-.partners-row {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: var(--grid-gap);
+.partners-container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-items: center;
+  gap: 24px;
   width: 100%;
-  box-sizing: border-box;
+}
+
+.partners-label {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-muted);
+  margin: 0;
+  text-align: center;
+}
+
+.partners-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 72px;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .partner-logo-item {
-  grid-column: span 6;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   filter: brightness(0);
-  opacity: 0.85;
+  opacity: 0.75;
   transition: opacity 0.2s ease;
 }
 
@@ -461,7 +484,7 @@ button {
 }
 
 .partner-logo-item img {
-  max-height: 52px;
+  max-height: 48px;
   max-width: 100%;
   object-fit: contain;
   margin: 0 auto;
@@ -808,6 +831,18 @@ button {
   color: var(--color-dark);
 }
 
+.cta-form-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.cta-form-wrap .wishlist-form {
+  justify-content: center;
+}
+
 /* --- 11. FOOTER (#1E1E1E Dark Card within Desktop Columns) --- */
 .footer-wrapper {
   width: 100%;
@@ -948,14 +983,14 @@ button {
   }
 
   .hero-section {
-    padding-top: 140px;
+    padding-top: 130px;
   }
 
   .hero-intro {
     display: flex;
     flex-direction: column;
-    gap: 40px;
-    margin-bottom: 60px;
+    gap: 36px;
+    margin-bottom: 50px;
   }
 
   .hero-title-box,
@@ -966,7 +1001,7 @@ button {
   }
 
   .hero-desc-box {
-    gap: 24px;
+    gap: 20px;
   }
 
   .hero-description {
@@ -991,32 +1026,11 @@ button {
     display: none;
   }
 
-  .partners-row {
-    grid-template-columns: repeat(2, 1fr);
-    row-gap: 20px;
-  }
-
-  .partner-card {
-    grid-column: span 1;
-  }
-
-  .feature-row {
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
-  }
-
-  .feature-col-media,
-  .feature-col-text {
-    width: 100%;
-    padding-left: 0;
-  }
-
   .story-row,
   .story-row.reversed {
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: 40px;
   }
 
   .story-col-text,
@@ -1025,13 +1039,8 @@ button {
   }
 
   .footer-card {
-    width: calc(100% - 80px);
+    width: 100%;
     padding: 60px 40px;
-  }
-
-  .footer-columns-6col {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 36px;
   }
 }
 
@@ -1042,21 +1051,22 @@ button {
     --content-width: calc(100vw - 40px);
   }
 
+  /* 1. Header & Navigation */
   .menu-toggle {
     display: flex;
   }
 
   .nav-links {
     position: fixed;
-    top: 75px;
+    top: 72px;
     left: 0;
     right: 0;
     background: var(--color-white);
     flex-direction: column;
-    padding: 32px 24px;
-    gap: 24px;
+    padding: 28px 24px;
+    gap: 20px;
     border-bottom: 1px solid var(--color-border);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     transform: translateY(-150%);
     opacity: 0;
     pointer-events: none;
@@ -1069,49 +1079,231 @@ button {
     pointer-events: auto;
   }
 
+  .nav-links .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 12px 24px;
+  }
+
+  /* 2. Section Paddings */
   .hero-section {
-    padding-top: 110px;
+    padding-top: 100px;
   }
 
-  .visual-grid-3 {
-    grid-template-columns: 1fr;
+  .partners-section {
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 
+  .platform-section {
+    padding-top: 72px;
+    padding-bottom: 60px;
+  }
+
+  .stories-green-section {
+    padding-top: 28px;
+    padding-bottom: 52px;
+  }
+
+  .cta-section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  /* 3. Typography & Titles */
+  .hero-title {
+    font-size: clamp(34px, 8.5vw, 44px);
+    letter-spacing: -1.2px;
+    line-height: 1.15;
+  }
+
+  .hero-description {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .section-h1 {
+    font-size: clamp(26px, 6.5vw, 34px);
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .customer-intro-title {
+    font-size: clamp(26px, 6.5vw, 34px);
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+  }
+
+  .story-heading {
+    font-size: clamp(22px, 5.5vw, 28px);
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+  }
+
+  .story-desc {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .cta-title {
+    font-size: clamp(28px, 7.5vw, 40px);
+    letter-spacing: -1px;
+    line-height: 1.2;
+  }
+
+  .footer-email-link {
+    font-size: clamp(20px, 5.5vw, 28px);
+    word-break: break-all;
+  }
+
+  /* 4. Hero Visual Card & Form */
+  .hero-intro {
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .hero-visual-card {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    min-height: 190px;
+    max-height: 280px;
+    border-radius: 16px;
+  }
+
+  .wishlist-form {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .wishlist-input {
+    width: 100%;
+    font-size: 16px;
+    padding: 14px 20px;
+    box-sizing: border-box;
+  }
+
+  .wishlist-btn {
+    width: 100%;
+    padding: 14px 24px !important;
+    min-height: 48px;
+    box-sizing: border-box;
+  }
+
+  /* 5. Partners */
   .partners-row {
-    grid-template-columns: 1fr;
+    gap: 32px;
   }
 
-  .story-pair-grid {
-    grid-template-columns: 1fr;
+  .partners-label {
+    font-size: 11px;
+    letter-spacing: 1px;
   }
 
+  .partner-logo-item img {
+    max-height: 40px;
+  }
+
+  /* 6. Platform Sticky Split-Scroll on Mobile */
   .platform-showcase {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 24px;
   }
 
   .showcase-sticky-col {
     position: -webkit-sticky;
     position: sticky;
-    top: 90px;
-    height: 320px;
-    grid-column: span 12;
+    top: 76px;
+    height: 210px;
+    z-index: 10;
+    margin-bottom: 16px;
+  }
+
+  .showcase-card-stack {
+    height: 100%;
+    border-radius: 16px;
   }
 
   .showcase-steps-col {
-    grid-column: span 12;
     padding-left: 0;
   }
 
   .showcase-step {
-    min-height: 50vh;
+    min-height: 36vh;
+    padding: 16px 0;
+  }
+
+  /* 7. Stories Cards & Natural Reading Order */
+  .story-row,
+  .story-row.reversed {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .story-row.reversed .story-col-text {
+    order: 1;
+  }
+
+  .story-row.reversed .story-col-media {
+    order: 2;
+  }
+
+  .story-pair-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .story-main-card {
+    height: auto;
+    aspect-ratio: 4 / 3;
+    min-height: 190px;
+    max-height: 260px;
+    border-radius: 16px;
+  }
+
+  .story-pair-item {
+    height: auto;
+    aspect-ratio: 1 / 1;
+    min-height: 100px;
+    max-height: 140px;
+    border-radius: 12px;
+  }
+
+  /* 8. Footer Optimization & Touch Targets */
+  .footer-card {
+    width: 100%;
+    padding: 40px 20px;
+    border-radius: 16px 16px 0 0;
   }
 
   .footer-grid-row {
-    display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 32px;
+  }
+
+  .footer-social-icons {
+    gap: 12px;
+  }
+
+  .footer-social-link {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 9. Hide Developer Overlays on Mobile */
+  #grid-toggle-btn {
+    display: none !important;
   }
 }
 
@@ -1288,21 +1480,6 @@ button {
   font-size: 15px !important;
 }
 
-@media (max-width: 768px) {
-  .wishlist-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .wishlist-btn {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1199.98px) {
-  .partner-logo-item {
-    grid-column: span 1;
-  }
-}
 
 /* Hero wishlist label & note */
 .hero-wishlist-wrap {

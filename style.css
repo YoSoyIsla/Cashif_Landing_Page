@@ -1540,3 +1540,146 @@ button {
   font-weight: 600;
   font-size: 14px;
 }
+
+/* ====================================================================
+   MINIMALIST MODALS (Hakkımızda & İletişim)
+   ==================================================================== */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+button.nav-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 15, 15, 0.38);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-dialog {
+  background: var(--color-white);
+  border-radius: 28px;
+  max-width: 440px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  transform: scale(0.95) translateY(12px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 44px 36px 40px 36px;
+  box-sizing: border-box;
+}
+
+.modal-overlay.is-active .modal-dialog {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--color-dark);
+  opacity: 0.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  padding: 0;
+}
+
+.modal-close-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+  transform: scale(1.08);
+}
+
+.modal-simple-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-simple-title {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-dark);
+  letter-spacing: -0.4px;
+  margin: 0;
+}
+
+.modal-simple-lead {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 2px 0 0 0;
+  line-height: 1.4;
+}
+
+.modal-simple-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.modal-simple-contact {
+  margin-top: 14px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.modal-simple-email {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-dark);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-block;
+}
+
+.modal-simple-email:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 600px) {
+  .modal-dialog {
+    padding: 34px 24px 28px 24px;
+    border-radius: 22px;
+  }
+  .modal-simple-title {
+    font-size: 23px;
+  }
+}

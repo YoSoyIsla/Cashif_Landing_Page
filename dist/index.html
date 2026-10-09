@@ -74,8 +74,8 @@
 
       <nav id="nav-links" class="nav-links">
         <a href="#nasil-calisir" class="nav-link">Nasıl çalışır?</a>
-        <a href="#hakkimizda" class="nav-link">Hakkımızda</a>
-        <a href="mailto:info@cashif.app" class="nav-link">İletişim</a>
+        <button type="button" class="nav-link" data-open-modal="about">Hakkımızda</button>
+        <button type="button" class="nav-link" data-open-modal="contact">İletişim</button>
         <a href="#hero-wishlist" class="btn-primary">Bekleme listesi</a>
       </nav>
     </div>
@@ -202,11 +202,11 @@
     <!-- ====================================================================
          GREEN STORIES SECTION (Full-Bleed Mint Green #08deaa Background)
          ==================================================================== -->
-    <section class="stories-green-section" id="hakkimizda">
+    <section class="stories-green-section">
       <div class="grid-container">
         <!-- Customer Introduction Title -->
         <div class="customer-intro-header">
-          <h2 class="customer-intro-title">Öğrenmeyi bırakmamak için her gün bir neden.</h2>
+          <h2 class="customer-intro-title">Küçük günlük adımlarla, büyük finansal özgürlüğe.</h2>
         </div>
 
         <!-- Story 1 (Niş Oyunlaştırma) (Cols 1-5 Text | Cols 7-12 Media) -->
@@ -361,6 +361,47 @@
     <span class="grid-btn-label">12-Col Grid: OFF</span>
     <span class="grid-btn-shortcut">Alt+G</span>
   </button>
+
+  <!-- ====================================================================
+       MINIMALIST MODALS (Hakkımızda & İletişim)
+       ==================================================================== -->
+  <!-- Hakkımızda Modal -->
+  <div id="modal-about" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-about-title" style="display: none;">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" aria-label="Kapat" data-close-modal>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-simple-content">
+        <h3 id="modal-about-title" class="modal-simple-title">Hakkımızda</h3>
+        <p class="modal-simple-lead">Finansta kaybolma, cashif’le keşfet.</p>
+        <p class="modal-simple-desc">Finansı karmaşık kalıplardan arındırıp herkes için sade, anlaşılır ve keyifli bir günlük alışkanlığa dönüştürüyoruz.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- İletişim Modal -->
+  <div id="modal-contact" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-contact-title" style="display: none;">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" aria-label="Kapat" data-close-modal>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-simple-content">
+        <h3 id="modal-contact-title" class="modal-simple-title">İletişim</h3>
+        <p class="modal-simple-desc">Her türlü soru, görüş ve iş birliği için bize dilediğin zaman yazabilirsin.</p>
+        <div class="modal-simple-contact">
+          <a href="mailto:info@cashif.app" class="modal-simple-email">info@cashif.app</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="./main.js"></script>
 </body>

@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       menuToggle.setAttribute('aria-expanded', isOpen);
     });
 
-    navLinks.querySelectorAll('a').forEach(link => {
+    navLinks.querySelectorAll('a, button').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('active');
         menuToggle.setAttribute('aria-expanded', 'false');
@@ -327,6 +327,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize custom wishlist forms validation and design language feedback
   initWishlistForms();
+
+  // Initialize modal popups (Hakkımızda & İletişim)
+  initModals();
 });
 
 // --- 4. Interactive Navbar Logo Touch Support ---
@@ -412,6 +415,78 @@ function initWishlistForms() {
           ${message}
         `;
         feedback.style.display = 'inline-flex';
+      }
+    }
+  });
+}
+
+// --- 6. Minimalist Modal Popups (Hakkımızda & İletişim) ---
+function initModals() {
+  const modalTriggers = document.querySelectorAll('[data-open-modal]');
+  const closeButtons = document.querySelectorAll('[data-close-modal]');
+  const overlays = document.querySelectorAll('.modal-overlay');
+
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    // Close mobile menu if open
+    const navLinks = document.getElementById('nav-links');
+    const menuToggle = document.getElementById('menu-toggle');
+    if (navLinks && navLinks.classList.contains('active')) {
+      navLinks.classList.remove('active');
+      if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    modal.style.display = 'flex';
+    // Force browser reflow to ensure the transition triggers smoothly from initial state
+    void modal.offsetWidth;
+    requestAnimationFrame(() => {
+      modal.classList.add('is-active');
+      document.body.classList.add('modal-open');
+    });
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+    modal.classList.remove('is-active');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      if (!document.querySelector('.modal-overlay.is-active')) {
+        document.body.classList.remove('modal-open');
+      }
+    }, 450);
+  }
+
+  modalTriggers.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const type = btn.getAttribute('data-open-modal');
+      openModal(`modal-${type}`);
+    });
+  });
+
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const modal = btn.closest('.modal-overlay');
+      closeModal(modal);
+    });
+  });
+
+  overlays.forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeModal(overlay);
+      }
+    });
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const activeModal = document.querySelector('.modal-overlay.is-active');
+      if (activeModal) {
+        closeModal(activeModal);
       }
     }
   });

@@ -45,6 +45,15 @@ class LerpSmoothScroll {
     ) - window.innerHeight;
   }
 
+  scrollTo(targetY) {
+    this.currentY = window.scrollY;
+    this.targetY = Math.max(0, Math.min(targetY, this.maxScroll()));
+    if (!this.isScrolling) {
+      this.isScrolling = true;
+      this.rafId = requestAnimationFrame(this.update);
+    }
+  }
+
   onWheel(e) {
     e.preventDefault();
 
@@ -207,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
   platformHeader = document.querySelector('.platform-header');
 
   // Initialize Lerp Smooth Scrolling
-  new LerpSmoothScroll();
+  window.lerpScroll = new LerpSmoothScroll();
 
   // Initialize Sticky Split-Scroll Showcase in Purple Platform Section
   initPlatformShowcase();
@@ -270,16 +279,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Smooth scroll and focus on email input when clicking wishlist buttons
-  document.querySelectorAll('a[href="#hero-wishlist"]').forEach(link => {
+  // Buttery smooth scroll for in-page anchor links (Nasıl çalışır?, Hakkımızda, Bekleme listesi, vb.)
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href === '#' || href === '#!') return;
+
     link.addEventListener('click', (e) => {
+      const targetId = href.substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (!targetEl) return;
+
       e.preventDefault();
-      const target = document.getElementById('hero-wishlist');
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        const input = target.querySelector('.wishlist-input');
+
+      // Close mobile menu if open
+      const navLinks = document.getElementById('nav-links');
+      const menuToggle = document.getElementById('menu-toggle');
+      if (navLinks && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      // Calculate target scroll position taking fixed header into account
+      const headerHeight = document.querySelector('.site-header')?.offsetHeight || 72;
+      const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+
+      if (window.lerpScroll && !window.matchMedia('(pointer: coarse)').matches) {
+        window.lerpScroll.scrollTo(targetPosition);
+      } else {
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+
+      // If target is the wishlist form, focus input
+      if (targetId === 'hero-wishlist') {
+        const input = targetEl.querySelector('.wishlist-input');
         if (input) {
-          setTimeout(() => input.focus(), 600);
+          setTimeout(() => input.focus(), 650);
         }
       }
     });
@@ -287,6 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize interactive navbar logo touch support
   initNavbarLogoInteraction();
+
+  // Initialize custom wishlist forms validation and design language feedback
+  initWishlistForms();
 });
 
 // --- 4. Interactive Navbar Logo Touch Support ---
@@ -306,4 +346,73 @@ function initNavbarLogoInteraction() {
       brandLogo.classList.remove('is-hovered');
     }, 450);
   }, { passive: true });
+}
+
+// --- 5. Custom Wishlist Form Validation & Design Language Feedback ---
+function initWishlistForms() {
+  document.querySelectorAll('.wishlist-form').forEach(form => {
+    const input = form.querySelector('.wishlist-input');
+    const wrap = form.closest('.hero-wishlist-wrap') || form.closest('.cta-form-wrap');
+    const feedback = wrap ? wrap.querySelector('.form-feedback') : null;
+    const note = wrap ? wrap.querySelector('.hero-wishlist-note') : null;
+
+    if (!input) return;
+
+    // Clear error state immediately when user begins typing
+    input.addEventListener('input', () => {
+      input.classList.remove('has-error');
+      if (feedback && feedback.classList.contains('error')) {
+        feedback.style.display = 'none';
+        if (note) note.style.display = '';
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!email) {
+        showError('Lütfen e-posta adresini gir.');
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        showError('Lütfen geçerli bir e-posta adresi gir.');
+        return;
+      }
+
+      // Success State
+      input.classList.remove('has-error');
+      form.style.display = 'none';
+      if (note) note.style.display = 'none';
+      if (feedback) {
+        feedback.className = 'form-feedback success';
+        feedback.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Bekleme listesine eklendin! Lansman tarihini ilk sen öğreneceksin.
+        `;
+        feedback.style.display = 'inline-flex';
+      }
+    });
+
+    function showError(message) {
+      input.classList.add('has-error');
+      input.focus();
+      if (feedback) {
+        feedback.className = 'form-feedback error';
+        feedback.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          ${message}
+        `;
+        feedback.style.display = 'inline-flex';
+      }
+    }
+  });
 }

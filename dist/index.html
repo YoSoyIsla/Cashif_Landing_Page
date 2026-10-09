@@ -74,6 +74,7 @@
 
       <nav id="nav-links" class="nav-links">
         <a href="#nasil-calisir" class="nav-link">Nasıl çalışır?</a>
+        <a href="#hakkimizda" class="nav-link">Hakkımızda</a>
         <a href="mailto:info@cashif.app" class="nav-link">İletişim</a>
         <a href="#hero-wishlist" class="btn-primary">Bekleme listesi</a>
       </nav>
@@ -105,11 +106,12 @@
           </p>
           <div class="hero-action" id="hero-wishlist">
             <div class="hero-wishlist-wrap">
-              <form class="wishlist-form" onsubmit="event.preventDefault(); alert('Bekleme listesine eklendin!');">
-                <input type="email" placeholder="E-posta adresin" aria-label="E-posta adresiniz" class="wishlist-input" required>
+              <p class="hero-wishlist-note">Lansman tarihini ilk sen öğren.</p>
+              <form class="wishlist-form" novalidate>
+                <input type="email" placeholder="E-posta adresin" aria-label="E-posta adresiniz" class="wishlist-input">
                 <button type="submit" class="btn-accent wishlist-btn">Listeye katıl</button>
               </form>
-              <p class="hero-wishlist-note">Lansman tarihini ilk sen öğren.</p>
+              <div class="form-feedback" role="alert" style="display: none;"></div>
             </div>
           </div>
         </div>
@@ -200,7 +202,7 @@
     <!-- ====================================================================
          GREEN STORIES SECTION (Full-Bleed Mint Green #08deaa Background)
          ==================================================================== -->
-    <section class="stories-green-section">
+    <section class="stories-green-section" id="hakkimizda">
       <div class="grid-container">
         <!-- Customer Introduction Title -->
         <div class="customer-intro-header">
@@ -263,11 +265,11 @@
         <div class="cta-banner">
           <h2 class="cta-title">Lansmanda yerini şimdiden ayırt.</h2>
           <div class="cta-form-wrap">
-            <form class="wishlist-form" onsubmit="event.preventDefault(); alert('Bekleme listesine eklendin!');">
-              <input type="email" placeholder="E-posta adresin" aria-label="E-posta adresiniz" class="wishlist-input" required>
+            <form class="wishlist-form" novalidate>
+              <input type="email" placeholder="E-posta adresin" aria-label="E-posta adresiniz" class="wishlist-input">
               <button type="submit" class="btn-accent wishlist-btn">Listeye katıl</button>
             </form>
-            <p class="hero-wishlist-note">Lansman tarihini ilk sen öğren.</p>
+            <div class="form-feedback" role="alert" style="display: none;"></div>
           </div>
         </div>
       </div>
@@ -300,7 +302,7 @@
             <!-- Right Group (Columns 9 to 12) -->
             <div class="footer-right-col">
               <a href="mailto:info@cashif.app" class="footer-email-link">info@cashif.app</a>
-              <p class="footer-tagline">Hız değil, sabır ve irade. Sabırla öğren, cashif’le büyü.</p>
+              <p class="footer-tagline">Finansta kaybolma, cashif’le keşfet.</p>
 
               <div class="footer-social-icons">
                 <!-- TikTok -->

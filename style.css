@@ -963,6 +963,17 @@ button {
   display: block;
 }
 
+.footer-brand-link {
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.footer-brand-link:hover {
+  opacity: 0.85;
+}
+
 .footer-copyright {
   font-size: 15px;
   line-height: 1.5;

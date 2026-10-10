@@ -312,6 +312,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Smooth scroll to top when brand logo is clicked (no instant snapping/teleporting)
+  document.querySelectorAll('.brand-logo, .footer-brand-link').forEach(logo => {
+    logo.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Close mobile menu if open
+      const navLinks = document.getElementById('nav-links');
+      const menuToggle = document.getElementById('menu-toggle');
+      if (navLinks && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
+      }
+
+      if (window.lerpScroll && !window.matchMedia('(pointer: coarse)').matches) {
+        window.lerpScroll.scrollTo(0);
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
   // Buttery smooth scroll for in-page anchor links (Nasıl çalışır?, Hakkımızda, Bekleme listesi, vb.)
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     const href = link.getAttribute('href');

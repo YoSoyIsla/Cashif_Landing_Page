@@ -862,11 +862,24 @@ button {
 }
 
 /* --- 10b. CALL TO ACTION SECTION (White #ffffff Background) --- */
-.cta-section {
+/* --- 10b. BOTTOM PAGE GROUP (CTA + Footer Container) --- */
+.bottom-page-group {
   width: 100%;
   background-color: var(--color-white);
-  padding-top: var(--space-section);
-  padding-bottom: var(--space-section);
+  min-height: calc(100vh + 40px);
+  min-height: calc(100dvh + 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.cta-section {
+  width: 100%;
+  background-color: transparent;
+  padding-top: 48px;
+  padding-bottom: 28px;
+  box-sizing: border-box;
 }
 
 .cta-banner {
@@ -1270,9 +1283,15 @@ button {
   }
 
   /* 6. CTA & Footer */
+  .bottom-page-group {
+    min-height: calc(100vh + 40px);
+  }
+
   .cta-section {
-    padding-top: 56px;
-    padding-bottom: 56px;
+    padding-top: 40px;
+    padding-bottom: 28px;
+    min-height: auto;
+    display: block;
   }
 
   .footer-card {
@@ -1365,9 +1384,15 @@ button {
     padding-bottom: 52px;
   }
 
+  .bottom-page-group {
+    min-height: calc(100dvh + 40px);
+  }
+
   .cta-section {
-    padding-top: 64px;
-    padding-bottom: 64px;
+    padding-top: 36px;
+    padding-bottom: 24px;
+    min-height: auto;
+    display: block;
   }
 
   /* 3. Typography & Titles */

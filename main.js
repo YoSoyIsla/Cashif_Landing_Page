@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Calculate target scroll position taking fixed header into account
       const headerHeight = document.querySelector('.site-header')?.offsetHeight || 72;
-      const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+      const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight;
 
       if (window.lerpScroll && !window.matchMedia('(pointer: coarse)').matches) {
         window.lerpScroll.scrollTo(targetPosition);

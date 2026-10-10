@@ -143,17 +143,21 @@ function updateAllScrollEffects() {
 
   // 2. Parallax Depth on Purple Section Only (White sections remain completely static & intact)
   if (platformSection && platformHeader) {
-    const platRect = platformSection.getBoundingClientRect();
-    if (platRect.top < vh && platRect.bottom > 0) {
-      // enterProgress: 0 when purple enters viewport, 1 when it reaches top
-      const enterProgress = Math.max(0, Math.min(1, (vh - platRect.top) / vh));
-      // Purple header smoothly floats upward with parallax depth, 100% full opacity always
-      const headerOffset = (1 - enterProgress) * 110;
-      platformHeader.style.transform = `translate3d(0, ${headerOffset.toFixed(1)}px, 0)`;
-    } else if (platRect.top >= vh) {
-      platformHeader.style.transform = 'translate3d(0, 110px, 0)';
+    if (window.innerWidth <= 1199.98) {
+      platformHeader.style.transform = 'none';
     } else {
-      platformHeader.style.transform = 'translate3d(0, 0, 0)';
+      const platRect = platformSection.getBoundingClientRect();
+      if (platRect.top < vh && platRect.bottom > 0) {
+        // enterProgress: 0 when purple enters viewport, 1 when it reaches top
+        const enterProgress = Math.max(0, Math.min(1, (vh - platRect.top) / vh));
+        // Purple header smoothly floats upward with subtle parallax depth
+        const headerOffset = (1 - enterProgress) * 36;
+        platformHeader.style.transform = `translate3d(0, ${headerOffset.toFixed(1)}px, 0)`;
+      } else if (platRect.top >= vh) {
+        platformHeader.style.transform = 'translate3d(0, 36px, 0)';
+      } else {
+        platformHeader.style.transform = 'translate3d(0, 0, 0)';
+      }
     }
   }
 }
@@ -170,6 +174,11 @@ function initPlatformShowcase() {
   let activeIndex = -1;
 
   function update() {
+    if (window.innerWidth <= 1199.98) {
+      steps.forEach(step => step.classList.add('active'));
+      return;
+    }
+
     const vh = window.innerHeight;
     const triggerLine = vh * 0.5;
 
@@ -226,21 +235,45 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', updateAllScrollEffects);
   updateAllScrollEffects();
 
-  // Mobile Menu Toggle
+  // Mobile Menu Toggle, Backdrop & Scroll Locking
   const menuToggle = document.getElementById('menu-toggle');
   const navLinks = document.getElementById('nav-links');
+  const menuBackdrop = document.getElementById('menu-backdrop');
 
   if (menuToggle && navLinks) {
+    const closeMenu = () => {
+      navLinks.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+    };
+
+    const openMenu = () => {
+      navLinks.classList.add('active');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
+    };
+
     menuToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('active');
-      menuToggle.setAttribute('aria-expanded', isOpen);
+      const isOpen = navLinks.classList.contains('active');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
+    if (menuBackdrop) {
+      menuBackdrop.addEventListener('click', closeMenu);
+    }
+
     navLinks.querySelectorAll('a, button').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      });
+      link.addEventListener('click', closeMenu);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+        closeMenu();
+      }
     });
   }
 
@@ -297,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (navLinks && navLinks.classList.contains('active')) {
         navLinks.classList.remove('active');
         if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
       }
 
       // Calculate target scroll position taking fixed header into account

@@ -83,8 +83,8 @@
 
   /* Layout Tokens */
   --header-h: 92px;            /* 56px logo + 2 x 18px padding */
-  --space-section: 140px;      /* Standard vertical section rhythm */
-  --space-section-sm: 88px;    /* Compact sections (partners, story gaps) */
+  --space-section: 100px;      /* Standard vertical section rhythm (tightened from 140px) */
+  --space-section-sm: 64px;    /* Compact sections (tightened from 88px) */
   --radius-lg: 16px;           /* Large cards */
   --radius-md: 12px;           /* Small cards */
   --radius-sm: 6px;            /* Badges */
@@ -119,11 +119,53 @@ body {
   width: 100%;
 }
 
+body.menu-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+/* Mobile Navigation Backdrop Overlay */
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(18, 18, 20, 0.45);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 990;
+}
+
+body.menu-open .menu-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 img,
 video {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* Universal Card Media (Zero Distortion, Geometric Aspect Ratio Preservation) */
+.hero-visual-card img,
+.hero-visual-card video,
+.showcase-card img,
+.showcase-card video,
+.showcase-step-media img,
+.showcase-step-media video,
+.story-main-card img,
+.story-main-card video,
+.story-pair-item img,
+.story-pair-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: inherit;
+  display: block;
 }
 
 a {
@@ -310,17 +352,32 @@ button {
   display: none;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 6px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
 }
 
 .menu-line {
-  width: 24px;
+  width: 22px;
   height: 2px;
   background-color: var(--color-dark);
   border-radius: 2px;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transform-origin: center;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-line:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-line:last-child {
+  transform: translateY(-4px) rotate(-45deg);
 }
 
 /* --- 6. HERO SECTION (12-Column Grid) --- */
@@ -530,9 +587,10 @@ button {
   grid-column: 1 / 7;
   position: -webkit-sticky;
   position: sticky;
-  top: max(calc(var(--header-h) + 24px), calc(50vh - 260px));
-  height: 520px;
+  top: max(calc(var(--header-h) + 24px), calc(50vh - 240px));
+  aspect-ratio: 4 / 3;
   width: 100%;
+  max-height: 490px;
   z-index: 5;
 }
 
@@ -577,6 +635,11 @@ button {
   background-color: var(--color-dark);
 }
 
+/* Hidden on desktop; rendered inline within steps on mobile/tablet */
+.showcase-step-media {
+  display: none;
+}
+
 /* Right Scrolling Steps Column (Columns 8 to 12, Column 7 = gap) */
 .showcase-steps-col {
   grid-column: 8 / 13;
@@ -586,11 +649,12 @@ button {
 }
 
 .showcase-step {
-  min-height: 75vh;
+  min-height: 38vh;
+  max-height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
   box-sizing: border-box;
   opacity: 0.35;
   transform: translateY(8px);
@@ -742,7 +806,9 @@ button {
 /* Solid Color Story Boxes (Filled with #371aee, #1E1E1E, #ffffff, #08deaa) */
 .story-main-card {
   width: 100%;
-  height: 424px;
+  aspect-ratio: 3 / 2;
+  height: auto;
+  max-height: 440px;
   border-radius: var(--radius-lg);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
 }
@@ -764,7 +830,8 @@ button {
 
 .story-pair-item {
   width: 100%;
-  height: 202px;
+  aspect-ratio: 3 / 2;
+  height: auto;
   border-radius: var(--radius-md);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
@@ -966,22 +1033,87 @@ button {
 
 /* --- 12. RESPONSIVE BREAKPOINTS --- */
 
-/* Tablet (768px - 1199px) */
+/* Tablet & Medium Screens (768px - 1199.98px) */
 @media (max-width: 1199.98px) {
   :root {
-    --grid-margin: 40px;
-    --content-width: calc(100vw - 80px);
+    --header-h: 80px;
+    --grid-margin: 32px;
+    --content-width: calc(100vw - 64px);
+    --space-section: 64px;
+    --space-section-sm: 40px;
   }
 
+  /* 1. Header & Tablet/Mobile Navigation Drawer */
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    background: var(--color-white);
+    flex-direction: column;
+    padding: 24px var(--grid-margin) 32px;
+    gap: 6px;
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    z-index: 1000;
+    max-height: calc(100vh - var(--header-h));
+    overflow-y: auto;
+  }
+
+  .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-link {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-dark);
+    padding: 14px 4px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: color 0.2s ease, padding-left 0.2s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link:active {
+    color: var(--color-primary);
+    padding-left: 6px;
+  }
+
+  .nav-links .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 14px 24px;
+    min-height: 48px;
+    margin-top: 10px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 2. Hero Section */
   .hero-section {
-    padding-top: calc(var(--header-h) + 38px);
+    padding-top: calc(var(--header-h) + 24px);
   }
 
   .hero-intro {
     display: flex;
     flex-direction: column;
-    gap: 36px;
-    margin-bottom: 50px;
+    gap: 28px;
+    margin-bottom: 36px;
   }
 
   .hero-title-box,
@@ -991,22 +1123,10 @@ button {
     max-width: 100%;
   }
 
-  .hero-desc-box {
-    gap: 20px;
-  }
-
-  .hero-description {
-    margin-top: 0;
-  }
-
-  .hero-action {
-    margin-bottom: 0;
-  }
-
   .hero-title {
     height: auto;
-    gap: 8px;
-    font-size: clamp(38px, 6vw, 56px);
+    font-size: clamp(36px, 5.5vw, 54px);
+    line-height: 1.15;
   }
 
   .hero-title-line {
@@ -1017,11 +1137,127 @@ button {
     display: none;
   }
 
+  .hero-visual-card {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    max-height: 380px;
+    border-radius: var(--radius-lg);
+  }
+
+  /* 3. Partners */
+  .partners-row {
+    gap: 40px;
+    justify-content: center;
+  }
+
+  /* 4. Platform Showcase (Natural Card-Per-Step Flow) */
+  .platform-section {
+    padding-top: 48px;
+    padding-bottom: 40px;
+  }
+
+  .platform-header {
+    margin: 0 auto 28px;
+    gap: 16px;
+  }
+
+  .platform-header .section-h1 {
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.2;
+    letter-spacing: -1px;
+  }
+
+  .platform-header .section-subtitle {
+    font-size: 17px;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+
+  .platform-showcase {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+
+  .showcase-sticky-col {
+    display: none !important;
+  }
+
+  .showcase-steps-col {
+    grid-column: 1 / -1;
+    max-width: 640px;
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .showcase-step {
+    min-height: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+  }
+
+  .showcase-step-media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-height: 260px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+    margin-bottom: 4px;
+  }
+
+  .showcase-step-media.card-fill-white {
+    background-color: var(--color-white);
+  }
+
+  .showcase-step-media.card-fill-mint {
+    background-color: var(--color-accent);
+  }
+
+  .showcase-step-media.card-fill-dark {
+    background-color: var(--color-dark);
+  }
+
+  .feature-title {
+    font-size: clamp(22px, 3.5vw, 28px);
+    letter-spacing: -0.8px;
+    line-height: 1.25;
+  }
+
+  .feature-body {
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .showcase-note {
+    margin-top: 12px;
+    font-size: 13px;
+  }
+
+  /* 5. Stories & Reading Order */
   .story-row,
   .story-row.reversed {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 36px;
+  }
+
+  .story-row.reversed .story-col-text {
+    order: 1;
+  }
+
+  .story-row.reversed .story-col-media {
+    order: 2;
   }
 
   .story-col-text,
@@ -1029,9 +1265,36 @@ button {
     width: 100%;
   }
 
+  .story-main-card {
+    max-height: 380px;
+  }
+
+  /* 6. CTA & Footer */
+  .cta-section {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+
   .footer-card {
     width: 100%;
-    padding: 60px 40px;
+    padding: 48px 36px;
+  }
+
+  .footer-grid-row {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .footer-left-col,
+  .footer-right-col {
+    width: 100%;
+    grid-column: auto;
+  }
+
+  .footer-email-link {
+    font-size: clamp(24px, 3.8vw, 34px);
+    word-break: normal;
   }
 }
 
@@ -1093,8 +1356,8 @@ button {
   }
 
   .platform-section {
-    padding-top: 72px;
-    padding-bottom: 60px;
+    padding-top: 48px;
+    padding-bottom: 40px;
   }
 
   .stories-green-section {
@@ -1154,8 +1417,8 @@ button {
   }
 
   .footer-email-link {
-    font-size: clamp(20px, 5.5vw, 28px);
-    word-break: break-all;
+    font-size: clamp(18px, 5.6vw, 28px);
+    word-break: normal;
   }
 
   /* 4. Hero Visual Card & Form */
@@ -1207,34 +1470,18 @@ button {
     max-height: 40px;
   }
 
-  /* 6. Platform Sticky Split-Scroll on Mobile */
+  /* 6. Platform Showcase on Mobile */
   .platform-showcase {
-    display: flex;
-    flex-direction: column;
     gap: 24px;
   }
 
-  .showcase-sticky-col {
-    position: -webkit-sticky;
-    position: sticky;
-    top: calc(var(--header-h) + 8px);
-    height: 210px;
-    z-index: 10;
-    margin-bottom: 16px;
-  }
-
-  .showcase-card-stack {
-    height: 100%;
-    border-radius: 16px;
-  }
-
   .showcase-steps-col {
-    padding-left: 0;
+    gap: 24px;
   }
 
-  .showcase-step {
-    min-height: 36vh;
-    padding: 16px 0;
+  .showcase-step-media {
+    max-height: 220px;
+    border-radius: 14px;
   }
 
   /* 7. Stories Cards & Natural Reading Order */
@@ -1260,15 +1507,15 @@ button {
 
   .story-main-card {
     height: auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 2;
     min-height: 190px;
-    max-height: 260px;
+    max-height: 280px;
     border-radius: 16px;
   }
 
   .story-pair-item {
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 2;
     min-height: 100px;
     max-height: 140px;
     border-radius: 12px;
@@ -1285,6 +1532,18 @@ button {
     display: flex;
     flex-direction: column;
     gap: 32px;
+  }
+
+  .footer-nav-links {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-text-link {
+    padding: 8px 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 
   .footer-social-icons {
@@ -1593,5 +1852,5 @@ button {
     white-space: normal;
     max-width: 100%;
     border-radius: 12px;
-}
+  }
 }

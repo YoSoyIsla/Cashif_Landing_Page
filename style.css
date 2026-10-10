@@ -76,11 +76,22 @@
   --font-body: 'Figtree', sans-serif;
 
   /* 12-Column Desktop Grid Metrics */
-  --container-max-width: 1440px;
   --content-width: 1296px;
   --grid-margin: max(72px, calc((100vw - var(--content-width)) / 2));
   --grid-columns: 12;
   --grid-gap: 24px;
+
+  /* Layout Tokens */
+  --header-h: 92px;            /* 56px logo + 2 x 18px padding */
+  --space-section: 140px;      /* Standard vertical section rhythm */
+  --space-section-sm: 88px;    /* Compact sections (partners, story gaps) */
+  --radius-lg: 16px;           /* Large cards */
+  --radius-md: 12px;           /* Small cards */
+  --radius-sm: 6px;            /* Badges */
+}
+
+html {
+  scroll-padding-top: var(--header-h);
 }
 
 /* --- 3. RESET & BASE --- */
@@ -205,32 +216,6 @@ button {
   pointer-events: none;
 }
 
-.logo-arrow {
-  transform: translate(212.334px, 269.044px);
-  opacity: 0;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
-  will-change: transform, opacity;
-}
-
-.logo-base {
-  transform: translate(211.185px, 264.552px);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
-}
-
-.brand-logo:hover .logo-arrow,
-.brand-logo.is-hovered .logo-arrow,
-.navbar-animated-logo:hover .logo-arrow {
-  transform: translate(253.223px, 245.489px);
-  opacity: 1;
-}
-
-.brand-logo:hover .logo-base,
-.brand-logo.is-hovered .logo-base,
-.navbar-animated-logo:hover .logo-base {
-  transform: translate(169.436px, 287.91px);
-}
-
 .nav-links {
   display: flex;
   align-items: center;
@@ -341,7 +326,7 @@ button {
 /* --- 6. HERO SECTION (12-Column Grid) --- */
 .hero-section {
   width: 100%;
-  padding-top: 180px;
+  padding-top: calc(var(--header-h) + 68px);
   padding-bottom: 0;
 }
 
@@ -349,14 +334,14 @@ button {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--grid-gap);
-  align-items: start;
+  align-items: end;
   width: 100%;
-  margin-bottom: 72px;
+  margin-bottom: 48px;
 }
 
-/* Left Group (Columns 1 to 6 - Occupies Full 6 Columns in Desktop) */
+/* Main Headline (Columns 1 to 12) */
 .hero-title-box {
-  grid-column: 1 / 7;
+  grid-column: 1 / 13;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -384,20 +369,22 @@ button {
   color: var(--color-primary);
 }
 
-/* Spacer (Column 7 - Negative Space) */
+/* Spacer (Column 8 - Negative Space) */
 .hero-grid-spacer {
-  grid-column: 7 / 8;
+  grid-column: 8 / 9;
 }
 
-/* Right Group (Columns 8 to 12 - 5 Columns for balanced form width) */
+/* Right Group (Columns 9 to 12) */
 .hero-desc-box {
-  grid-column: 8 / 13;
+  grid-column: 9 / 13;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: flex-start;
   gap: 20px;
   width: 100%;
+  /* Optically align form bottom with the headline baseline */
+  padding-bottom: 0.6em;
 }
 
 .hero-description {
@@ -424,15 +411,15 @@ button {
   width: 100%;
   height: 472px;
   background-color: var(--color-dark);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
 /* --- 7. PARTNERS SECTION (Centered between Hero Card and Platform Section) --- */
 .partners-section {
   width: 100%;
-  padding-top: 88px;
-  padding-bottom: 88px;
+  padding-top: var(--space-section-sm);
+  padding-bottom: var(--space-section-sm);
   background-color: var(--color-white);
   position: relative;
   z-index: 1;
@@ -491,8 +478,8 @@ button {
   width: 100%;
   background-color: var(--color-primary);
   color: var(--color-white);
-  padding-top: 180px;
-  padding-bottom: 120px;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section-sm);
   position: relative;
   z-index: 2;
   margin-top: 0;
@@ -502,7 +489,7 @@ button {
 .platform-header {
   text-align: center;
   max-width: 960px;
-  margin: 0 auto 120px;
+  margin: 0 auto var(--space-section-sm);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -543,7 +530,7 @@ button {
   grid-column: 1 / 7;
   position: -webkit-sticky;
   position: sticky;
-  top: calc(50vh - 260px);
+  top: max(calc(var(--header-h) + 24px), calc(50vh - 260px));
   height: 520px;
   width: 100%;
   z-index: 5;
@@ -553,7 +540,7 @@ button {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: none;
 }
@@ -564,7 +551,7 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   opacity: 0;
   transform: scale(0.97);
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -590,12 +577,11 @@ button {
   background-color: var(--color-dark);
 }
 
-/* Right Scrolling Steps Column (Columns 7 to 12) */
+/* Right Scrolling Steps Column (Columns 8 to 12, Column 7 = gap) */
 .showcase-steps-col {
-  grid-column: 7 / 13;
+  grid-column: 8 / 13;
   display: flex;
   flex-direction: column;
-  padding-left: 32px;
   box-sizing: border-box;
 }
 
@@ -632,6 +618,13 @@ button {
   color: rgba(255, 255, 255, 0.9);
 }
 
+.showcase-note {
+  margin-top: 24px;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.65);
+}
+
 /* --- 8c. DYNAMIC MORPHING CURVE DIVIDER (Between Purple and Green Sections) --- */
 .curve-divider-wrapper {
   width: 100%;
@@ -664,7 +657,7 @@ button {
   background-color: var(--color-accent);
   color: var(--color-dark);
   padding-top: 32px;
-  padding-bottom: 80px;
+  padding-bottom: var(--space-section-sm);
 }
 
 .customer-intro-header {
@@ -708,7 +701,7 @@ button {
   display: inline-flex;
   align-items: center;
   padding: 4px 14px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background-color: var(--color-white);
   color: var(--color-dark);
   font-family: var(--font-heading);
@@ -750,7 +743,7 @@ button {
 .story-main-card {
   width: 100%;
   height: 424px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
 }
 
@@ -772,7 +765,7 @@ button {
 .story-pair-item {
   width: 100%;
   height: 202px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -805,8 +798,8 @@ button {
 .cta-section {
   width: 100%;
   background-color: var(--color-white);
-  padding-top: 140px;
-  padding-bottom: 140px;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section);
 }
 
 .cta-banner {
@@ -853,8 +846,8 @@ button {
   width: 100%;
   background-color: var(--color-dark);
   color: var(--color-white);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   padding: 64px 64px 72px;
@@ -863,15 +856,16 @@ button {
 }
 
 .footer-grid-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--grid-gap);
   align-items: flex-start;
   width: 100%;
-  gap: 48px;
 }
 
 /* Left Group */
 .footer-left-col {
+  grid-column: 1 / 7;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -923,6 +917,7 @@ button {
 
 /* Right Group */
 .footer-right-col {
+  grid-column: 9 / 13;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -979,7 +974,7 @@ button {
   }
 
   .hero-section {
-    padding-top: 130px;
+    padding-top: calc(var(--header-h) + 38px);
   }
 
   .hero-intro {
@@ -1043,18 +1038,24 @@ button {
 /* Mobile (< 768px) */
 @media (max-width: 767.98px) {
   :root {
+    --header-h: 76px;
     --grid-margin: 20px;
     --content-width: calc(100vw - 40px);
   }
 
   /* 1. Header & Navigation */
+  .nav-inner {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
   .menu-toggle {
     display: flex;
   }
 
   .nav-links {
     position: fixed;
-    top: 72px;
+    top: var(--header-h);
     left: 0;
     right: 0;
     background: var(--color-white);
@@ -1083,7 +1084,7 @@ button {
 
   /* 2. Section Paddings */
   .hero-section {
-    padding-top: 100px;
+    padding-top: calc(var(--header-h) + 24px);
   }
 
   .partners-section {
@@ -1216,7 +1217,7 @@ button {
   .showcase-sticky-col {
     position: -webkit-sticky;
     position: sticky;
-    top: 76px;
+    top: calc(var(--header-h) + 8px);
     height: 210px;
     z-index: 10;
     margin-bottom: 16px;
@@ -1281,6 +1282,7 @@ button {
   }
 
   .footer-grid-row {
+    display: flex;
     flex-direction: column;
     gap: 32px;
   }
@@ -1591,148 +1593,5 @@ button {
     white-space: normal;
     max-width: 100%;
     border-radius: 12px;
-  }
 }
-
-/* ====================================================================
-   MINIMALIST MODALS (Hakkımızda & İletişim)
-   ==================================================================== */
-body.modal-open {
-  overflow: hidden !important;
-}
-
-button.nav-link {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(15, 15, 15, 0.38);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-overlay.is-active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-dialog {
-  background: var(--color-white);
-  border-radius: 28px;
-  max-width: 440px;
-  width: 100%;
-  position: relative;
-  box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.04);
-  transform: scale(0.95) translateY(12px);
-  opacity: 0;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 44px 36px 40px 36px;
-  box-sizing: border-box;
-}
-
-.modal-overlay.is-active .modal-dialog {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-}
-
-.modal-close-btn {
-  position: absolute;
-  top: 22px;
-  right: 22px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--color-dark);
-  opacity: 0.4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
-  padding: 0;
-}
-
-.modal-close-btn:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.05);
-  transform: scale(1.08);
-}
-
-.modal-simple-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.modal-simple-title {
-  font-family: var(--font-heading);
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--color-dark);
-  letter-spacing: -0.4px;
-  margin: 0;
-}
-
-.modal-simple-lead {
-  font-family: var(--font-heading);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 2px 0 0 0;
-  line-height: 1.4;
-}
-
-.modal-simple-desc {
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--color-muted);
-  margin: 0;
-}
-
-.modal-simple-contact {
-  margin-top: 14px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.modal-simple-email {
-  font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-dark);
-  text-decoration: none;
-  transition: color 0.2s ease;
-  display: inline-block;
-}
-
-.modal-simple-email:hover {
-  color: var(--color-primary);
-}
-
-@media (max-width: 600px) {
-  .modal-dialog {
-    padding: 34px 24px 28px 24px;
-    border-radius: 22px;
-  }
-  .modal-simple-title {
-    font-size: 23px;
-  }
 }

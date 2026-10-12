@@ -34,7 +34,7 @@ function handleFileChange(relPath) {
   }, 40);
 }
 
-['index.html', 'style.css', 'main.js', 'Hoover_Logo_Animation.json'].forEach(file => {
+['index.html', 'style.css', 'main.js'].forEach(file => {
   const p = path.join(ROOT_DIR, file);
   if (fs.existsSync(p)) {
     fs.watch(p, (eventType) => {

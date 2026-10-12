@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // If target is the wishlist form, focus input
-      if (targetId === 'bekleme-listesi' || targetId === 'hero-wishlist') {
+      if (targetId === 'bekleme-listesi') {
         const input = targetEl.querySelector('.wishlist-input');
         if (input) {
           setTimeout(() => input.focus(), 650);
@@ -419,9 +419,8 @@ function initNavbarLogoInteraction() {
 function initWishlistForms() {
   document.querySelectorAll('.wishlist-form').forEach(form => {
     const input = form.querySelector('.wishlist-input');
-    const wrap = form.closest('.hero-wishlist-wrap') || form.closest('.cta-form-wrap');
+    const wrap = form.closest('.cta-form-wrap');
     const feedback = wrap ? wrap.querySelector('.form-feedback') : null;
-    const note = wrap ? wrap.querySelector('.hero-wishlist-note') : null;
 
     if (!input) return;
 
@@ -430,7 +429,6 @@ function initWishlistForms() {
       input.classList.remove('has-error');
       if (feedback && feedback.classList.contains('error')) {
         feedback.style.display = 'none';
-        if (note) note.style.display = '';
       }
     });
 
@@ -452,7 +450,6 @@ function initWishlistForms() {
       // Success State
       input.classList.remove('has-error');
       form.style.display = 'none';
-      if (note) note.style.display = 'none';
       if (feedback) {
         feedback.className = 'form-feedback success';
         feedback.innerHTML = `

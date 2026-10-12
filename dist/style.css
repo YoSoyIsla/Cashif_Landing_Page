@@ -67,7 +67,6 @@
   --color-accent: #08deaa;
   --color-dark: #1e1e1e;
   --color-white: #ffffff;
-  --color-cream: #e8eee3;
   --color-muted: #797979;
   --color-border: rgba(0, 0, 0, 0.08);
 
@@ -78,7 +77,6 @@
   /* 12-Column Desktop Grid Metrics */
   --content-width: 1296px;
   --grid-margin: max(72px, calc((100vw - var(--content-width)) / 2));
-  --grid-columns: 12;
   --grid-gap: 24px;
 
   /* Layout Tokens */
@@ -88,10 +86,6 @@
   --radius-lg: 16px;           /* Large cards */
   --radius-md: 12px;           /* Small cards */
   --radius-sm: 6px;            /* Badges */
-}
-
-html {
-  scroll-padding-top: var(--header-h);
 }
 
 /* --- 3. RESET & BASE --- */
@@ -106,6 +100,7 @@ html {
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -196,14 +191,6 @@ button {
   max-width: 100%;
   padding-left: var(--grid-margin);
   padding-right: var(--grid-margin);
-  box-sizing: border-box;
-}
-
-.row-12col {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: var(--grid-gap);
-  width: 100%;
   box-sizing: border-box;
 }
 
@@ -334,19 +321,6 @@ button {
   color: var(--color-dark);
 }
 
-/* 4. Buttons on Mint (#08deaa) Background (Stories Sections) */
-.stories-green-section .btn-primary,
-.stories-white-section .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-}
-
-.stories-green-section .btn-primary:hover,
-.stories-white-section .btn-primary:hover {
-  background-color: var(--color-dark);
-  color: var(--color-white);
-}
-
 /* Mobile Menu Toggle */
 .menu-toggle {
   display: none;
@@ -428,42 +402,6 @@ button {
 
 .hero-title .text-primary {
   color: var(--color-primary);
-}
-
-/* Spacer (Column 8 - Negative Space) */
-.hero-grid-spacer {
-  grid-column: 8 / 9;
-}
-
-/* Right Group (Columns 9 to 12) */
-.hero-desc-box {
-  grid-column: 9 / 13;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 20px;
-  width: 100%;
-  /* Optically align form bottom with the headline baseline */
-  padding-bottom: 0.6em;
-}
-
-.hero-description {
-  font-size: clamp(17px, 1.35vw, 20px);
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: -0.2px;
-  color: var(--color-dark);
-  margin: 0;
-  margin-top: 6px;
-}
-
-.hero-action {
-  margin-top: 0;
-  margin-bottom: 0;
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
 }
 
 /* Hero Visual Box (Spanning all 12 columns, Solid Dark #1E1E1E on White) */
@@ -780,10 +718,6 @@ button {
   text-transform: none;
 }
 
-.badge-label.cream {
-  background-color: var(--color-cream);
-}
-
 .story-heading {
   font-family: var(--font-heading);
   font-size: clamp(40px, 4vw, 54px);
@@ -852,10 +786,6 @@ button {
   background-color: var(--color-primary);
 }
 
-.story-pair-item.card-mint {
-  background-color: var(--color-accent);
-}
-
 /* Reversed Rows: Media on Cols 1-6, Text on Cols 8-12 */
 .story-row.reversed .story-col-media {
   grid-column: 1 / 7;
@@ -909,6 +839,7 @@ button {
 }
 
 .cta-form-wrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1155,8 +1086,7 @@ button {
     margin-bottom: 36px;
   }
 
-  .hero-title-box,
-  .hero-desc-box {
+  .hero-title-box {
     grid-column: auto;
     height: auto;
     max-width: 100%;
@@ -1176,10 +1106,6 @@ button {
   .hero-title-line {
     white-space: normal;
     text-align: center;
-  }
-
-  .hero-grid-spacer {
-    display: none;
   }
 
   .hero-visual-card {
@@ -1437,11 +1363,6 @@ button {
     line-height: 1.15;
     align-items: center;
     text-align: center;
-  }
-
-  .hero-description {
-    font-size: 16px;
-    line-height: 1.5;
   }
 
   .section-h1 {
@@ -1802,26 +1723,6 @@ button {
   font-size: 15px !important;
 }
 
-
-/* Hero wishlist label & note */
-.hero-wishlist-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  width: 100%;
-  position: relative;
-}
-
-.hero-wishlist-note {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-muted);
-  line-height: 1.4;
-}
-
 /* Input Validation & Feedback */
 .wishlist-input.has-error {
   border-color: rgba(220, 38, 38, 0.45) !important;
@@ -1842,25 +1743,6 @@ button {
   gap: 7px;
   line-height: 1.4;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Positioned absolutely so that it NEVER pushes or moves the black hero visual card or siblings below */
-.hero-wishlist-wrap .form-feedback.error {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  color: #c93b3b;
-  background: rgba(220, 38, 38, 0.05);
-  padding: 6px 14px;
-  border-radius: 100px;
-  border: 1px solid rgba(220, 38, 38, 0.12);
-  animation: gentleFadeSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  white-space: nowrap;
-  z-index: 5;
-}
-
-.cta-form-wrap {
-  position: relative;
 }
 
 .cta-form-wrap .form-feedback.error {
@@ -1912,7 +1794,6 @@ button {
 }
 
 @media (max-width: 480px) {
-  .hero-wishlist-wrap .form-feedback.error,
   .cta-form-wrap .form-feedback.error {
     white-space: normal;
     max-width: 100%;

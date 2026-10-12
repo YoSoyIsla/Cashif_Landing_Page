@@ -32,18 +32,17 @@ Open `index.html` or `dist/index.html` directly in any modern web browser or liv
 ## 📁 Project Structure
 
 ```text
-├── index.html           # Clean, semantic HTML5 structure with 6-column grid layout
-├── style.css            # Modular vanilla CSS design system & 6-column desktop architecture
-├── main.js              # Lightweight vanilla JS for mobile menu & 6-col grid overlay
-├── build.js             # Standalone production builder script (outputs to dist/)
+├── index.html           # Clean, semantic HTML5 structure with 12-column grid layout
+├── style.css            # Modular vanilla CSS design system & 12-column desktop architecture
+├── main.js              # Lightweight vanilla JS for mobile menu, smooth scrolling & 12-col grid overlay
+├── build.js             # Standalone production builder script (outputs clean bundle to dist/)
 ├── package.json         # Package configuration with start/dev/build scripts
-├── server.js            # Zero-dependency local dev server
+├── server.js            # Zero-dependency local dev server with live-reload
 ├── README.md            # Documentation and instructions
 ├── dist/                # Production distribution output
 └── assets/
-    ├── images/          # All 23 original high-res SVG logos, cards, and UI images
-    ├── fonts/           # Google Figtree and Inter WOFF2 fonts self-hosted locally
-    └── media/           # Hero MP4 background video and poster image
+    ├── images/          # Verified SVG brand and partner logos (BTM, Tech İstanbul, favicon)
+    └── fonts/           # Self-hosted Google Figtree and Inter WOFF2 fonts
 ```
 
 ---

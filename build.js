@@ -48,12 +48,13 @@ function syncFile(relativePath) {
 function buildAll(silent = false) {
   if (!silent) console.log('🚀 Building production distribution...');
 
-  if (!fs.existsSync(DIST_DIR)) {
-    fs.mkdirSync(DIST_DIR, { recursive: true });
+  if (fs.existsSync(DIST_DIR)) {
+    fs.rmSync(DIST_DIR, { recursive: true, force: true });
   }
+  fs.mkdirSync(DIST_DIR, { recursive: true });
 
   // 1. Copy root web files
-  ['index.html', 'style.css', 'main.js', 'Logo_Icon.svg', 'Hoover_Logo.svg', 'Comp 1 (3).svg', 'Hoover_Logo_Animation.json'].forEach(file => {
+  ['index.html', 'style.css', 'main.js'].forEach(file => {
     const src = path.join(ROOT_DIR, file);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(DIST_DIR, file));
@@ -76,7 +77,7 @@ function watchBuild() {
   buildAll();
   console.log('👀 Watching files for instant build sync to dist/...');
 
-  const filesToWatch = ['index.html', 'style.css', 'main.js', 'Logo_Icon.svg', 'Hoover_Logo.svg', 'Comp 1 (3).svg', 'Hoover_Logo_Animation.json'];
+  const filesToWatch = ['index.html', 'style.css', 'main.js'];
   filesToWatch.forEach(file => {
     const filePath = path.join(ROOT_DIR, file);
     if (fs.existsSync(filePath)) {

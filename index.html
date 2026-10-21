@@ -177,6 +177,7 @@
               <div class="showcase-step-media card-fill-white" aria-hidden="true"><img class="media-3d" src="./assets/images/3d/simulasyon-mobil.webp" alt="" loading="lazy" decoding="async"></div>
               <h3 class="feature-title">Kararlarını simülasyonda dene</h3>
               <p class="feature-body">Kurgusal şirketlerin hisselerinde işlem yaparsın. Haberler fiyatları etkiler ve verdiğin kararın sonucunu gerçek riske girmeden görürsün.</p>
+              <p class="feature-note">Simülasyonlar eğitim amaçlıdır, yatırım tavsiyesi içermez.</p>
             </div>
 
             <!-- Step 3 -->
@@ -186,7 +187,6 @@
               <p class="feature-body">Bir bölümü tamamladığında dijital sertifikanı alırsın. Seçili iş ortaklarımızın ürün ve hizmetlerinde sana özel avantajlardan yararlanabilirsin.</p>
             </div>
 
-            <p class="showcase-note">Simülasyonlar eğitim amaçlıdır, yatırım tavsiyesi içermez.</p>
           </div>
         </div>
       </div>
@@ -272,11 +272,10 @@
                 <input type="text" name="_gotcha" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
                 <label class="wishlist-consent">
                   <input type="checkbox" name="acik_riza" value="evet" required>
-                  <span>Lansman duyurusu için e-posta almayı ve e-posta adresimin bu amaçla yurt dışındaki Google sunucularında (Google E-Tablolar) saklanmasını kabul ediyorum.</span>
+                  <span><a href="./kvkk.html" data-legal-modal>Aydınlatma metni</a> kapsamında lansman duyurusu almayı kabul ediyorum.</span>
                 </label>
               </form>
               <div class="form-feedback" role="alert" style="display: none;"></div>
-              <p class="cta-legal">Verilerinin nasıl işlendiğini <a href="./kvkk.html">aydınlatma metninde</a> bulabilirsin.</p>
             </div>
           </div>
           <div class="cta-media" aria-hidden="true">
@@ -316,7 +315,7 @@
             </details>
             <details class="faq-item">
               <summary>E-posta adresimi ne için kullanacaksınız?</summary>
-              <p>Yalnızca lansman duyurusu göndermek için. Adresin satılmaz ve başka bir amaçla kullanılmaz. İstediğin zaman <a href="mailto:info@cashif.app">info@cashif.app</a> adresine yazarak listeden çıkabilirsin. Ayrıntılar <a href="./kvkk.html">aydınlatma metninde</a>.</p>
+              <p>Yalnızca lansman duyurusu göndermek için. Adresin satılmaz ve başka bir amaçla kullanılmaz. İstediğin zaman <a href="mailto:info@cashif.app">info@cashif.app</a> adresine yazarak listeden çıkabilirsin. Ayrıntılar <a href="./kvkk.html" data-legal-modal>aydınlatma metninde</a>.</p>
             </details>
           </div>
         </div>
@@ -339,12 +338,12 @@
               </div>
 
               <div class="footer-copyright">
-                <p>Copyright © cashif</p>
+                <p>© 2026 cashif</p>
               </div>
 
               <div class="footer-nav-links">
                 <a href="#sss" class="footer-text-link">SSS</a>
-                <a href="./kvkk.html" class="footer-text-link">KVKK aydınlatma metni</a>
+                <a href="./kvkk.html" class="footer-text-link" data-legal-modal>KVKK aydınlatma metni</a>
               </div>
             </div>
 
@@ -389,6 +388,19 @@
     </div>
 
   </main>
+
+  <!-- KVKK aydınlatma metni penceresi: içerik kvkk.html'den okunur (tek kaynak) -->
+  <dialog id="legal-dialog" class="legal-dialog" aria-labelledby="legal-dialog-title">
+    <div class="legal-dialog-head">
+      <h2 id="legal-dialog-title" class="legal-dialog-title">Aydınlatma metni</h2>
+      <button type="button" class="legal-dialog-close" aria-label="Pencereyi kapat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="legal-dialog-body" tabindex="0" autofocus>
+      <p class="legal-dialog-loading">Yükleniyor…</p>
+    </div>
+  </dialog>
 
   <!-- Interactive 12-Column Grid Overlay & Toggle -->
   <div id="grid-overlay" aria-hidden="true">

@@ -3,7 +3,7 @@
    100% Vanilla CSS - 6-Column Desktop Grid Architecture
    ========================================================================== */
 
-/* --- 1. LOCAL FONTS (Figtree & Inter) --- */
+/* --- 1. LOCAL FONTS (Figtree) --- */
 @font-face {
   font-family: 'Figtree';
   src: url('./assets/fonts/_Xmz-HUzqDCFdgfMsYiV_F7wfS-Bs_d_QF5bwkEU4HTy.woff2') format('woff2');
@@ -31,30 +31,6 @@
 @font-face {
   font-family: 'Figtree';
   src: url('./assets/fonts/_Xmz-HUzqDCFdgfMsYiV_F7wfS-Bs_eYR15bwkEU4HTy.woff2') format('woff2');
-  font-display: swap;
-  font-style: normal;
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'Figtree';
-  src: url('./assets/fonts/_Xmz-HUzqDCFdgfMsYiV_F7wfS-Bs_fWR15bwkEU4HTy.woff2') format('woff2');
-  font-display: swap;
-  font-style: normal;
-  font-weight: 900;
-}
-
-@font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/syRNPWzAMIrcJ3wIlPIP43KjQs.woff2') format('woff2');
-  font-display: swap;
-  font-style: normal;
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/VgYFWiwsAC5OYxAycRXXvhze58.woff2') format('woff2');
   font-display: swap;
   font-style: normal;
   font-weight: 700;
@@ -307,8 +283,7 @@ button {
 
 /* --- 5a. BUTTON DESIGN SYSTEM & HIERARCHY --- */
 .btn-primary,
-.btn-accent,
-.btn-secondary {
+.btn-accent {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -373,47 +348,12 @@ button {
   box-shadow: 0 8px 24px rgba(8, 222, 170, 0.38);
 }
 
-/* 3. Secondary Button (Ghost / Outline for secondary exploration) */
-.btn-secondary {
-  background-color: transparent;
-  color: var(--color-dark);
-  border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: none;
-}
-
-.btn-secondary:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-  border-color: var(--color-dark);
-  color: var(--color-dark);
-  transform: translateY(-1px);
-}
-
 /* Active tactile feedback for all buttons */
 .btn-primary:active,
 .btn-accent:active,
-.btn-secondary:active,
 .wishlist-btn:active {
   transform: translateY(0) scale(0.98) !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Button Sizing Utilities */
-.btn-sm {
-  font-size: 14px;
-  min-height: 36px;
-  padding: 8px 16px;
-}
-
-.btn-md {
-  font-size: 16px;
-  min-height: 46px;
-  padding: 12px 24px;
-}
-
-.btn-lg {
-  font-size: 17px;
-  min-height: 52px;
-  padding: 15px 30px;
 }
 
 /* Mobile Menu Toggle */
@@ -663,14 +603,6 @@ button {
   background-color: var(--color-white);
 }
 
-.showcase-card.card-fill-mint {
-  background-color: var(--color-accent);
-}
-
-.showcase-card.card-fill-dark {
-  background-color: var(--color-dark);
-}
-
 /* Hidden on desktop; rendered inline within steps on mobile/tablet */
 .showcase-step-media {
   display: none;
@@ -718,11 +650,10 @@ button {
   color: rgba(255, 255, 255, 0.9);
 }
 
-.showcase-note {
-  margin-top: 24px;
+.feature-note {
   font-size: 14px;
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* --- 8c. DYNAMIC MORPHING CURVE DIVIDER (Between Purple and Green Sections) --- */
@@ -781,7 +712,7 @@ button {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--grid-gap);
-  align-items: start;
+  align-items: center;
   margin-bottom: 96px;
   width: 100%;
 }
@@ -795,25 +726,6 @@ button {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  /* Pinned beside the tall media stack so the copy never floats in empty space */
-  position: sticky;
-  top: calc(50vh - 120px);
-  align-self: start;
-}
-
-.badge-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 14px;
-  border-radius: var(--radius-sm);
-  background-color: var(--color-white);
-  color: var(--color-dark);
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 600;
-  width: fit-content;
-  letter-spacing: -0.01em;
-  text-transform: none;
 }
 
 .story-heading {
@@ -836,25 +748,16 @@ button {
   grid-column: 7 / 13;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-/* Solid Color Story Boxes (Filled with #371aee, #1E1E1E, #ffffff, #08deaa) */
+/* White Story Cards (3D compositions, 2:1) */
 .story-main-card {
   width: 100%;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 1;
   height: auto;
-  max-height: 440px;
   border-radius: var(--radius-lg);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
-}
-
-.story-main-card.card-blue {
-  background-color: var(--color-primary);
-}
-
-.story-main-card.card-dark {
-  background-color: var(--color-dark);
 }
 
 .story-main-card.card-white {
@@ -864,13 +767,13 @@ button {
 .story-pair-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
   width: 100%;
 }
 
 .story-pair-item {
   width: 100%;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 1;
   height: auto;
   border-radius: var(--radius-md);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
@@ -878,14 +781,6 @@ button {
 
 .story-pair-item.card-white {
   background-color: var(--color-white);
-}
-
-.story-pair-item.card-dark {
-  background-color: var(--color-dark);
-}
-
-.story-pair-item.card-blue {
-  background-color: var(--color-primary);
 }
 
 /* Reversed Rows: Media on Cols 1-6, Text on Cols 8-12 */
@@ -962,23 +857,6 @@ button {
   margin-top: 8px;
 }
 
-.cta-legal {
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.75);
-  max-width: 520px;
-}
-
-.cta-legal a {
-  color: var(--color-white);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.cta-legal a:hover {
-  color: var(--color-accent);
-}
-
 .cta-media {
   grid-column: 8 / 13;
   aspect-ratio: 1 / 1;
@@ -1020,6 +898,7 @@ button {
 
 .faq-item {
   border-bottom: 1px solid rgba(13, 20, 40, 0.12);
+  overflow: hidden; /* clips the answer while main.js animates the height */
 }
 
 .faq-item summary {
@@ -1060,8 +939,16 @@ button {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.faq-item[open] summary::after {
+.faq-item[open]:not(.is-closing) summary::after {
   transform: rotate(45deg);
+}
+
+.faq-item p {
+  transition: opacity 0.3s ease;
+}
+
+.faq-item.is-closing p {
+  opacity: 0;
 }
 
 .faq-item p {
@@ -1076,6 +963,131 @@ button {
   color: var(--color-primary);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* --- 10d. LEGAL DIALOG (KVKK aydınlatma metni) --- */
+html.dialog-open {
+  overflow: hidden;
+}
+
+.legal-dialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(85vh, 820px);
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  color: var(--color-dark);
+  box-shadow: 0 24px 80px rgba(13, 20, 40, 0.28);
+  overflow: hidden;
+}
+
+.legal-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: dialogIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.legal-dialog.is-closing {
+  animation: dialogOut 0.2s ease forwards;
+}
+
+.legal-dialog::backdrop {
+  background: rgba(13, 20, 40, 0.55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.legal-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 20px 32px;
+  border-bottom: 1px solid rgba(13, 20, 40, 0.1);
+}
+
+.legal-dialog-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.legal-dialog-close {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--color-dark);
+  background: rgba(13, 20, 40, 0.06);
+  transition: background-color 0.2s ease;
+}
+
+.legal-dialog-close:hover {
+  background: rgba(13, 20, 40, 0.12);
+}
+
+.legal-dialog-body:focus-visible {
+  outline: none; /* scroll region receives initial focus; no ring needed */
+}
+
+.legal-dialog-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 32px 32px;
+}
+
+.legal-dialog-body h2 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 24px 0 8px;
+}
+
+.legal-dialog-body p {
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.legal-dialog-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-dialog-body .legal-meta {
+  color: var(--color-muted);
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+@keyframes dialogIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes dialogOut {
+  to { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+
+@media (max-width: 767.98px) {
+  .legal-dialog {
+    max-height: 88vh;
+  }
+
+  .legal-dialog-head {
+    padding: 16px 16px 16px 20px;
+  }
+
+  .legal-dialog-body {
+    padding: 4px 20px 24px;
+  }
 }
 
 /* --- 11. FOOTER (White, Navy Text, Hairline Top Rule) --- */
@@ -1272,14 +1284,15 @@ button {
     min-height: 48px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid rgba(13, 20, 40, 0.08);
     transition: color 0.2s ease, padding-left 0.2s ease;
+    width: 100%;
+    justify-content: center;
   }
 
   .nav-link:hover,
   .nav-link:active {
     color: var(--color-primary);
-    padding-left: 6px;
   }
 
   .nav-links .btn-primary {
@@ -1413,14 +1426,6 @@ button {
     background-color: var(--color-white);
   }
 
-  .showcase-step-media.card-fill-mint {
-    background-color: var(--color-accent);
-  }
-
-  .showcase-step-media.card-fill-dark {
-    background-color: var(--color-dark);
-  }
-
   .feature-title {
     font-size: clamp(22px, 3.5vw, 28px);
     letter-spacing: -0.8px;
@@ -1433,8 +1438,7 @@ button {
     color: rgba(255, 255, 255, 0.9);
   }
 
-  .showcase-note {
-    margin-top: 12px;
+  .feature-note {
     font-size: 13px;
   }
 
@@ -1457,14 +1461,6 @@ button {
   .story-col-text,
   .story-col-media {
     width: 100%;
-  }
-
-  .story-col-text {
-    position: static;
-  }
-
-  .story-main-card {
-    max-height: 380px;
   }
 
   /* 6. CTA & Footer */
@@ -1732,18 +1728,10 @@ button {
   }
 
   .story-main-card {
-    height: auto;
-    aspect-ratio: 3 / 2;
-    min-height: 190px;
-    max-height: 280px;
     border-radius: 16px;
   }
 
   .story-pair-item {
-    height: auto;
-    aspect-ratio: 3 / 2;
-    min-height: 100px;
-    max-height: 140px;
     border-radius: 12px;
   }
 
@@ -1992,6 +1980,16 @@ button {
   max-width: 560px;
 }
 
+.wishlist-consent a {
+  color: var(--color-white);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wishlist-consent a:hover {
+  color: var(--color-accent);
+}
+
 .wishlist-consent input {
   flex-shrink: 0;
   width: 18px;
@@ -2059,17 +2057,6 @@ button {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes gentleFadeSlideCentered {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -4px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
   }
 }
 

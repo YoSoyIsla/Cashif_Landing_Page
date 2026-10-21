@@ -1,7 +1,6 @@
-# Framer Landing Page Copy
+# cashif Landing Page
 
-Exact clone and replica of the Framer landing page:
-**Original URL:** [https://humble-presentation-759960.framer.app/](https://humble-presentation-759960.framer.app/)
+Pre-launch landing page and waitlist for cashif. Zero-dependency vanilla HTML, CSS and JS.
 
 ---
 
@@ -15,43 +14,49 @@ npm run dev
 # or
 node server.js
 ```
-Then open [http://localhost:3000](http://localhost:3000) in your web browser.
+Then open [http://localhost:3000](http://localhost:3000) in your web browser. Edits to `index.html`, `style.css` and `main.js` reload the page and sync to `dist/`.
 
 ### 2. Build for Production
 To create a standalone production bundle in `dist/`:
 ```bash
 npm run build
 ```
-This produces a self-contained, 100% offline-capable distribution folder in `dist/`.
-
-### 3. Direct browser access
-Open `index.html` or `dist/index.html` directly in any modern web browser or live server.
 
 ---
 
 ## 📁 Project Structure
 
 ```text
-├── index.html           # Clean, semantic HTML5 structure with 12-column grid layout
-├── style.css            # Modular vanilla CSS design system & 12-column desktop architecture
-├── main.js              # Lightweight vanilla JS for mobile menu, smooth scrolling & 12-col grid overlay
-├── build.js             # Standalone production builder script (outputs clean bundle to dist/)
-├── package.json         # Package configuration with start/dev/build scripts
-├── server.js            # Zero-dependency local dev server with live-reload
-├── README.md            # Documentation and instructions
-├── dist/                # Production distribution output
+├── index.html             # Page markup on a 12-column grid
+├── kvkk.html              # KVKK notice (also shown in an in-page dialog)
+├── style.css              # Design tokens, components & responsive rules
+├── main.js                # Smooth scroll, sticky showcase, menu, waitlist form, FAQ & KVKK dialog
+├── manifest.webmanifest   # App icons & theme colors
+├── build.js               # Production builder (outputs to dist/)
+├── server.js              # Zero-dependency local dev server with live-reload
+├── google-apps-script/    # Waitlist → Google Sheets web app (see its README)
+├── dist/                  # Production distribution output
 └── assets/
-    ├── images/          # Verified SVG brand and partner logos (BTM, Tech İstanbul, favicon)
-    └── fonts/           # Self-hosted Google Figtree and Inter WOFF2 fonts
+    ├── images/            # Logo, partner logos, icons, social share image
+    │   └── 3d/            # 3D card compositions (2x resolution WebP)
+    └── fonts/             # Self-hosted Figtree (400, 500, 600, 700)
 ```
 
 ---
 
 ## 🎨 Content & Features Included
 
-- **Header / Navigation:** Sticky glassmorphism nav with Cashif logo, navigation links (*Şirket*, *Uyguluma*, *İletişim*, *Kayıt Ol*), and CTA button (*Uygulamayı İndir*).
-- **Hero Section:** *"Finansta kaybolma, cashif’le keşfet."* with CTA buttons and interactive hero card media.
-- **Partners / Ecosystem Logos:** Biruni Teknopark, İstanbul Büyükşehir Belediyesi (İBB), Bilgiyi Ticarileştirme Merkezi (BTM), Tech İstanbul.
-- **Platform Features & Overviews:** Interactive card showcase, micro-interactions, responsive variants.
-- **Customer Stories:** Coinbase story, Qatar Airways, Alibaba.com, and Bilt Card.
-- **Responsive Layout:** Tailored layouts for Desktop, Tablet, and Mobile devices.
+- **Header / Navigation:** cashif logo, *Nasıl çalışır?*, *Özellikler*, *İletişim* and the *Bekleme listesine katıl* CTA.
+- **Hero:** *"Finansta kaybolma, cashif’le keşfet."* with the 3D discovery-path visual.
+- **Partners:** Bilgiyi Ticarileştirme Merkezi (BTM), Tech İstanbul.
+- **How it works:** Topics, simulation, certificate & perks with a sticky card on desktop.
+- **Features:** Streaks & Mint, weekly leagues & community.
+- **Waitlist:** Email form with explicit consent; entries are written to Google Sheets via `google-apps-script/`.
+- **FAQ:** Animated accordion on native `<details>`.
+- **Footer:** Contact, social links, FAQ and KVKK notice.
+
+## 📝 Notes
+
+- The waitlist form `action` is the Google Apps Script web app URL. Setup and redeploy steps: `google-apps-script/README.md`.
+- Fill in `[AD SOYAD]` in `kvkk.html`; update the data controller section once the company is founded.
+- The 12-column grid toggle (Alt+G) only appears on `localhost`.

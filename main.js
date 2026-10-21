@@ -59,6 +59,8 @@ class LerpSmoothScroll {
   }
 
   onWheel(e) {
+    // Let an open dialog scroll its own content natively
+    if (document.querySelector('dialog[open]')) return;
     e.preventDefault();
 
     let delta = e.deltaY;
@@ -77,6 +79,7 @@ class LerpSmoothScroll {
   onKeyDown(e) {
     const activeTag = document.activeElement ? document.activeElement.tagName : '';
     if (['INPUT', 'TEXTAREA'].includes(activeTag)) return;
+    if (document.querySelector('dialog[open]')) return;
 
     let delta = 0;
     if (e.key === 'ArrowDown') delta = 90;
@@ -403,7 +406,124 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize custom wishlist forms validation and design language feedback
   initWishlistForms();
+
+  // Smooth open/close for the FAQ accordion
+  initFaqAccordion();
+
+  // KVKK notice opens in a dialog instead of a separate page
+  initLegalDialog();
 });
+
+// --- 7. Legal Dialog: loads kvkk.html's <main> once and shows it in a native <dialog> ---
+function initLegalDialog() {
+  const dialog = document.getElementById('legal-dialog');
+  const links = document.querySelectorAll('a[data-legal-modal]');
+  if (!dialog || !links.length || typeof dialog.showModal !== 'function') return; // fall back to the page
+
+  const body = dialog.querySelector('.legal-dialog-body');
+  const title = dialog.querySelector('.legal-dialog-title');
+  let loaded = false;
+
+  async function loadContent(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const main = doc.querySelector('main');
+    if (!main) throw new Error('kvkk.html içinde <main> yok');
+    main.querySelector('.legal-back')?.remove();
+    const h1 = main.querySelector('h1');
+    if (h1) {
+      title.textContent = h1.textContent;
+      h1.remove();
+    }
+    body.replaceChildren(...main.childNodes);
+    loaded = true;
+  }
+
+  function close() {
+    if (!dialog.open || dialog.classList.contains('is-closing')) return;
+    const finish = () => {
+      dialog.classList.remove('is-closing');
+      dialog.close();
+    };
+    if (prefersReducedMotion()) return finish();
+    dialog.classList.add('is-closing');
+    setTimeout(finish, 200);
+  }
+
+  links.forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!loaded) {
+        try {
+          await loadContent(link.href);
+        } catch (err) {
+          console.error('Aydınlatma metni yüklenemedi, sayfaya yönlendiriliyor:', err);
+          window.location.href = link.href;
+          return;
+        }
+      }
+      document.documentElement.classList.add('dialog-open');
+      dialog.showModal();
+      body.scrollTop = 0;
+    });
+  });
+
+  dialog.querySelector('.legal-dialog-close')?.addEventListener('click', close);
+  // Click on the dimmed backdrop (the dialog element itself, outside its content) closes it
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) close();
+  });
+  dialog.addEventListener('cancel', (e) => {
+    e.preventDefault(); // Esc: run the same animated close
+    close();
+  });
+  dialog.addEventListener('close', () => {
+    document.documentElement.classList.remove('dialog-open');
+  });
+}
+
+// --- 6. FAQ Accordion: animates native <details> height (keeps keyboard & screen-reader behavior) ---
+function initFaqAccordion() {
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const summary = item.querySelector('summary');
+    if (!summary) return;
+    let animation = null;
+
+    summary.addEventListener('click', (e) => {
+      if (prefersReducedMotion()) return; // native instant toggle
+      e.preventDefault();
+
+      const startHeight = item.offsetHeight;
+      const closing = item.open && !item.classList.contains('is-closing');
+
+      if (animation) animation.cancel();
+
+      if (closing) {
+        item.classList.add('is-closing');
+        const endHeight = summary.offsetHeight;
+        animation = item.animate(
+          { height: [`${startHeight}px`, `${endHeight}px`] },
+          { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+        );
+        animation.onfinish = () => {
+          item.open = false;
+          item.classList.remove('is-closing');
+          animation = null;
+        };
+      } else {
+        item.classList.remove('is-closing');
+        item.open = true;
+        const endHeight = item.offsetHeight;
+        animation = item.animate(
+          { height: [`${startHeight}px`, `${endHeight}px`] },
+          { duration: 380, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+        );
+        animation.onfinish = () => { animation = null; };
+      }
+    });
+  });
+}
 
 // --- 4. Interactive Navbar Logo Touch Support ---
 function initNavbarLogoInteraction() {

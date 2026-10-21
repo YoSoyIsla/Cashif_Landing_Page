@@ -163,6 +163,24 @@ video {
   display: block;
 }
 
+/* 3D compositions sit on a flat card color: contain keeps every object uncropped at any card ratio */
+img.media-3d {
+  object-fit: contain;
+}
+
+picture {
+  display: contents;
+}
+
+/* Clip card media to the card's rounded corners (picture wrapper breaks radius inheritance) */
+.hero-visual-card,
+.showcase-card,
+.showcase-step-media,
+.story-main-card,
+.story-pair-item {
+  overflow: hidden;
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -457,12 +475,12 @@ button {
   color: var(--color-primary);
 }
 
-/* Hero Visual Box (Spanning all 12 columns, Solid Dark #1E1E1E on White) */
+/* Hero Visual Box (Spanning all 12 columns, Indigo #371aee on White) */
 .hero-visual-card {
   grid-column: 1 / 13;
   width: 100%;
   height: 472px;
-  background-color: var(--color-dark);
+  background-color: var(--color-primary);
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
@@ -810,6 +828,10 @@ button {
 
 .story-main-card.card-dark {
   background-color: var(--color-dark);
+}
+
+.story-main-card.card-white {
+  background-color: var(--color-white);
 }
 
 .story-pair-grid {

@@ -58,5 +58,4 @@ npm run build
 ## 📝 Notes
 
 - The waitlist form `action` is the Google Apps Script web app URL. Setup and redeploy steps: `google-apps-script/README.md`.
-- Fill in `[AD SOYAD]` in `kvkk.html`; update the data controller section once the company is founded.
-- The 12-column grid toggle (Alt+G) only appears on `localhost`.
+- `kvkk.html` names a natural person (Emre Kuzgun) as data controller until the company is founded; update that section afterwards.

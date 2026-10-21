@@ -2,7 +2,6 @@
  * Cashif Landing Page Logic
  * - Buttery Lerp Smooth Scrolling (Zero motion blur)
  * - Sticky Split-Scroll Feature Showcase in Purple Platform Section
- * - Interactive 12-Column Grid Toggle
  * - Mobile Navigation Menu
  */
 
@@ -284,38 +283,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Interactive 12-Column Grid Overlay Toggle (developer tool: local preview only)
-  const gridBtn = document.getElementById('grid-toggle-btn');
-  const gridOverlay = document.getElementById('grid-overlay');
-  const isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
-
-  if (gridBtn && gridOverlay && !isLocalPreview) {
-    gridBtn.remove();
-    gridOverlay.remove();
-  } else if (gridBtn && gridOverlay) {
-    gridBtn.hidden = false;
-    const updateBtnState = (isActive) => {
-      const label = gridBtn.querySelector('.grid-btn-label');
-      if (label) label.textContent = isActive ? '12-Col Grid: ON' : '12-Col Grid: OFF';
-      gridBtn.classList.toggle('is-active', isActive);
-      gridBtn.setAttribute('aria-pressed', isActive);
-    };
-
-    const toggleGrid = () => {
-      const isActive = gridOverlay.classList.toggle('active');
-      updateBtnState(isActive);
-    };
-
-    gridBtn.addEventListener('click', toggleGrid);
-
-    window.addEventListener('keydown', (e) => {
-      if (e.altKey && (e.key === 'g' || e.key === 'G')) {
-        toggleGrid();
-      }
-    });
-
-    updateBtnState(gridOverlay.classList.contains('active'));
-  }
 
   // Prevent dead anchor navigation (excluding brand-logo)
   document.querySelectorAll('a[href="#"]:not(.brand-logo)').forEach(link => {

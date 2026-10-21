@@ -5,8 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>cashif · Finansta kaybolma, cashif’le keşfet</title>
   <meta name="description" content="Gençler ve yeni nesil için interaktif finans eğitimi, borsa simülatörü ve görevlerle yatırım deneyimi.">
+  <link rel="canonical" href="https://cashif.app/">
+  <meta name="theme-color" content="#371aee">
+
+  <!-- Paylaşım önizlemesi (WhatsApp, Instagram, LinkedIn, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="cashif">
+  <meta property="og:url" content="https://cashif.app/">
+  <meta property="og:title" content="cashif · Finansta kaybolma, cashif’le keşfet">
+  <meta property="og:description" content="Gençler ve yeni nesil için interaktif finans eğitimi, borsa simülatörü ve görevlerle yatırım deneyimi.">
+  <meta property="og:image" content="https://cashif.app/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Pusuladan kupaya yükselen beş basamaklı cashif keşif rotası">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@cashifapp">
+
   <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
-  <link rel="apple-touch-icon" href="./assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" href="./assets/images/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -75,7 +94,7 @@
         <a href="#nasil-calisir" class="nav-link">Nasıl çalışır?</a>
         <a href="#ozellikler" class="nav-link">Özellikler</a>
         <a href="#iletisim" class="nav-link">İletişim</a>
-        <a href="#bekleme-listesi" class="btn-primary">Bekleme listesi</a>
+        <a href="#bekleme-listesi" class="btn-primary">Bekleme listesine katıl</a>
       </nav>
     </div>
   </header>
@@ -195,9 +214,8 @@
         <!-- Story 1 (Niş Oyunlaştırma) (Cols 1-5 Text | Cols 7-12 Media) -->
         <div class="story-row">
           <div class="story-col-text">
-            <span class="badge-label">Deneyim</span>
             <h3 class="story-heading">Her gün öğrenmek için yeni bir neden</h3>
-            <p class="story-desc">Uygulamaya düzenli girdikçe serin uzar ve Mint kazanırsın. Kazandığın Mint’lerle maskotunu ve profilini kendine göre düzenlersin. İlerlemen hem görünür hem keyifli hale gelir.</p>
+            <p class="story-desc">Uygulamaya düzenli girdikçe serin uzar ve Mint kazanırsın. İlerlemen hem görünür hem keyifli hale gelir.</p>
           </div>
           <div class="story-col-media">
             <!-- White 3D Visual -->
@@ -224,7 +242,6 @@
             </div>
           </div>
           <div class="story-col-text">
-            <span class="badge-label">Topluluk</span>
             <h3 class="story-heading">Arkadaşlarınla birlikte ilerle</h3>
             <p class="story-desc">Haftalık liglerde puan topla, arkadaşlarını takip et ve üniversiteni sıralamada temsil et. Biraz sağlıklı rekabet, öğrenmeye devam etmeyi kolaylaştırır.</p>
           </div>
@@ -238,24 +255,76 @@
          BOTTOM PAGE GROUP (CTA + Footer Container)
          ==================================================================== -->
     <div class="bottom-page-group">
-      <!-- CALL TO ACTION SECTION (White #ffffff Background) -->
+      <!-- CALL TO ACTION SECTION (Indigo Waitlist Card on White) -->
       <section class="cta-section" id="bekleme-listesi">
         <div class="grid-container">
-        <div class="cta-banner">
-          <h2 class="cta-title">Lansmanda yerini şimdiden ayırt.</h2>
-          <div class="cta-form-wrap">
-            <form class="wishlist-form" novalidate>
-              <input type="email" placeholder="E-posta adresin" aria-label="E-posta adresiniz" class="wishlist-input">
-              <button type="submit" class="btn-accent wishlist-btn">Listeye katıl</button>
-            </form>
-            <div class="form-feedback" role="alert" style="display: none;"></div>
+        <div class="cta-card">
+          <div class="cta-content">
+            <h2 class="cta-title">Lansmanda yerini şimdiden ayırt.</h2>
+            <p class="cta-lead">Uygulama yayına girdiğinde haber veren ilk e-posta sana gelsin. Spam yok, yalnızca lansman duyurusu.</p>
+            <div class="cta-form-wrap">
+              <!-- action: Google Apps Script web uygulaması (kurulum: google-apps-script/README.md). Kayıtlar cashif Google E-Tablosuna düşer. -->
+              <form class="wishlist-form" action="https://script.google.com/macros/s/AKfycbymQJ0YfIqNJ7VdAQgZaiGAqbCab8qjlzV5ixkRg47XPUS8GVZ8VnR3StAQ6UArNU74/exec" method="POST" novalidate>
+                <label for="wishlist-email" class="visually-hidden">E-posta adresin</label>
+                <input type="email" id="wishlist-email" name="email" placeholder="E-posta adresin" autocomplete="email" required class="wishlist-input">
+                <button type="submit" class="btn-accent wishlist-btn">Bekleme listesine katıl</button>
+                                <!-- Spam tuzağı: gerçek kullanıcı görmez, bot doldurursa kayıt yazılmaz -->
+                <input type="text" name="_gotcha" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <label class="wishlist-consent">
+                  <input type="checkbox" name="acik_riza" value="evet" required>
+                  <span>Lansman duyurusu için e-posta almayı ve e-posta adresimin bu amaçla yurt dışındaki Google sunucularında (Google E-Tablolar) saklanmasını kabul ediyorum.</span>
+                </label>
+              </form>
+              <div class="form-feedback" role="alert" style="display: none;"></div>
+              <p class="cta-legal">Verilerinin nasıl işlendiğini <a href="./kvkk.html">aydınlatma metninde</a> bulabilirsin.</p>
+            </div>
+          </div>
+          <div class="cta-media" aria-hidden="true">
+            <img class="media-3d" src="./assets/images/3d/cta.webp" alt="" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
     </section>
 
     <!-- ====================================================================
-         FOOTER (#1E1E1E Dark Card within Desktop Columns)
+         SSS (Native details/summary accordion: keyboard and screen-reader friendly)
+         ==================================================================== -->
+    <section class="faq-section" id="sss" aria-labelledby="sss-baslik">
+      <div class="grid-container">
+        <div class="faq-inner">
+          <h2 class="faq-title" id="sss-baslik">Sık sorulan sorular</h2>
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>cashif nedir?</summary>
+              <p>cashif, bütçeden kredi ve sigortaya, yatırımdan kripto varlıklara kadar temel finans konularını kısa dersler ve uygulamalı araçlarla öğreten bir finansal okuryazarlık uygulaması.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Finans bilgim yok, yine de kullanabilir miyim?</summary>
+              <p>Evet. Dersler konuları sıfırdan ve kısa adımlarla anlatır. Beş bölümün her biri bağımsız ilerler, yani ilgini çeken konudan başlayabilirsin.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Simülasyonda gerçek para kullanılıyor mu?</summary>
+              <p>Hayır. Kurgusal şirketlerin hisselerinde sanal olarak işlem yaparsın, kararlarının sonucunu gerçek riske girmeden görürsün. Simülasyonlar eğitim amaçlıdır, yatırım tavsiyesi içermez.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Mint nedir?</summary>
+              <p>Mint, uygulamaya düzenli girdikçe ve öğrendikçe kazandığın puandır. Serinle birlikte ilerlemeni görünür kılar.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Uygulama ne zaman yayına girecek?</summary>
+              <p>Lansman tarihini ilk olarak bekleme listesindekilere e-postayla duyuracağız. Listeye katılman yeterli.</p>
+            </details>
+            <details class="faq-item">
+              <summary>E-posta adresimi ne için kullanacaksınız?</summary>
+              <p>Yalnızca lansman duyurusu göndermek için. Adresin satılmaz ve başka bir amaçla kullanılmaz. İstediğin zaman <a href="mailto:info@cashif.app">info@cashif.app</a> adresine yazarak listeden çıkabilirsin. Ayrıntılar <a href="./kvkk.html">aydınlatma metninde</a>.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         FOOTER (White, Navy Text)
          ==================================================================== -->
     <footer class="footer-wrapper" id="iletisim">
       <div class="grid-container">
@@ -265,7 +334,7 @@
             <div class="footer-left-col">
               <div class="footer-brand-box">
                 <a href="#" class="footer-brand-link" aria-label="cashif Ana Sayfa">
-                  <img src="./assets/images/7zENZoJ3lsfva79wGJ06ryhgwSs.svg" alt="cashif Logo" class="footer-logo-img" width="130" height="48">
+                  <img src="./assets/images/cashif-wordmark.png" alt="cashif" class="footer-logo-img" width="150" height="56">
                 </a>
               </div>
 
@@ -274,8 +343,8 @@
               </div>
 
               <div class="footer-nav-links">
-                <a href="#" class="footer-text-link">SSS</a>
-                <a href="#" class="footer-text-link">Yasal Bildirimler</a>
+                <a href="#sss" class="footer-text-link">SSS</a>
+                <a href="./kvkk.html" class="footer-text-link">KVKK aydınlatma metni</a>
               </div>
             </div>
 
@@ -336,7 +405,7 @@
     <div class="grid-col-guide" data-col="11" data-label="11"></div>
     <div class="grid-col-guide" data-col="12" data-label="12"></div>
   </div>
-  <button id="grid-toggle-btn" title="Toggle 12-Column Desktop Grid Overlay (Alt+G)">
+  <button id="grid-toggle-btn" hidden title="Toggle 12-Column Desktop Grid Overlay (Alt+G)">
     <span class="grid-btn-dot"></span>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
     <span class="grid-btn-label">12-Col Grid: OFF</span>

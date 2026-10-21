@@ -54,7 +54,7 @@ function buildAll(silent = false) {
   fs.mkdirSync(DIST_DIR, { recursive: true });
 
   // 1. Copy root web files
-  ['index.html', 'style.css', 'main.js'].forEach(file => {
+  ['index.html', 'kvkk.html', 'manifest.webmanifest', 'style.css', 'main.js'].forEach(file => {
     const src = path.join(ROOT_DIR, file);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(DIST_DIR, file));

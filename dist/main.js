@@ -6,6 +6,10 @@
  * - Mobile Navigation Menu
  */
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // --- 1. Smooth Lerp Scroll Engine (Linear Interpolation, No Motion Blur) ---
 class LerpSmoothScroll {
   constructor() {
@@ -25,8 +29,8 @@ class LerpSmoothScroll {
   }
 
   init() {
-    // Only on desktop pointer devices
-    if (window.matchMedia('(pointer: coarse)').matches) {
+    // Only on desktop pointer devices, and never when the visitor asked for reduced motion
+    if (window.matchMedia('(pointer: coarse)').matches || prefersReducedMotion()) {
       return;
     }
 
@@ -277,11 +281,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Interactive 12-Column Grid Overlay Toggle
+  // Interactive 12-Column Grid Overlay Toggle (developer tool: local preview only)
   const gridBtn = document.getElementById('grid-toggle-btn');
   const gridOverlay = document.getElementById('grid-overlay');
+  const isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
 
-  if (gridBtn && gridOverlay) {
+  if (gridBtn && gridOverlay && !isLocalPreview) {
+    gridBtn.remove();
+    gridOverlay.remove();
+  } else if (gridBtn && gridOverlay) {
+    gridBtn.hidden = false;
     const updateBtnState = (isActive) => {
       const label = gridBtn.querySelector('.grid-btn-label');
       if (label) label.textContent = isActive ? '12-Col Grid: ON' : '12-Col Grid: OFF';
@@ -432,7 +441,9 @@ function initWishlistForms() {
       }
     });
 
-    form.addEventListener('submit', (e) => {
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = input.value.trim();
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -444,6 +455,46 @@ function initWishlistForms() {
 
       if (!emailRegex.test(email)) {
         showError('Lütfen geçerli bir e-posta adresi gir.');
+        return;
+      }
+
+      const consent = form.querySelector('input[name="acik_riza"]');
+      if (consent && !consent.checked) {
+        showError('Devam etmek için onay kutusunu işaretle.', consent);
+        return;
+      }
+
+      // Send the address to the collection service set in the form's action attribute
+      const endpoint = form.getAttribute('action');
+      if (!endpoint) {
+        console.warn('Bekleme listesi formunun action adresi boş: e-posta hiçbir yere gönderilmedi.');
+        showError('Kayıt şu an alınamıyor. Lütfen info@cashif.app adresine yaz.');
+        return;
+      }
+
+      const originalLabel = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Gönderiliyor…';
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        // Google Apps Script always answers 200; the JSON body says whether the row was saved
+        const result = await response.json().catch(() => null);
+        if (result && result.ok === false) throw new Error(result.error || 'rejected');
+      } catch (err) {
+        console.error('Bekleme listesi kaydı gönderilemedi:', err);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+        showError('Kayıt gönderilemedi. Bağlantını kontrol edip tekrar dene.');
         return;
       }
 
@@ -462,11 +513,11 @@ function initWishlistForms() {
       }
     });
 
-    function showError(message) {
-      if (!input.classList.contains('has-error')) {
+    function showError(message, focusTarget = input) {
+      if (focusTarget === input && !input.classList.contains('has-error')) {
         input.classList.add('has-error');
       }
-      input.focus();
+      focusTarget.focus();
       if (feedback) {
         feedback.className = 'form-feedback error';
         feedback.innerHTML = `

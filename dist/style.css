@@ -65,9 +65,9 @@
   /* Brand Colors */
   --color-primary: #371aee;
   --color-accent: #08deaa;
-  --color-dark: #1e1e1e;
+  --color-dark: #0d1428;       /* Derin lacivert: marka metin rengi (siyah kullanılmaz) */
   --color-white: #ffffff;
-  --color-muted: #797979;
+  --color-muted: #5b6075;
   --color-border: rgba(0, 0, 0, 0.08);
 
   /* Typography */
@@ -179,6 +179,30 @@ picture {
 .story-main-card,
 .story-pair-item {
   overflow: hidden;
+}
+
+/* Visible keyboard focus: indigo ring on light surfaces, white ring on indigo surfaces */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.platform-section :focus-visible,
+.cta-card :focus-visible {
+  outline-color: var(--color-white);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 a {
@@ -482,7 +506,6 @@ button {
   height: 472px;
   background-color: var(--color-primary);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
 /* --- 7. PARTNERS SECTION (Centered between Hero Card and Platform Section) --- */
@@ -505,10 +528,9 @@ button {
 
 .partners-label {
   font-family: var(--font-heading);
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--color-muted);
   margin: 0;
   text-align: center;
@@ -518,7 +540,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 72px;
+  gap: 96px;
   width: 100%;
   flex-wrap: wrap;
 }
@@ -528,7 +550,7 @@ button {
   align-items: center;
   justify-content: center;
   filter: brightness(0);
-  opacity: 0.75;
+  opacity: 0.85;
   transition: opacity 0.2s ease;
 }
 
@@ -537,7 +559,8 @@ button {
 }
 
 .partner-logo-item img {
-  max-height: 48px;
+  height: 60px;
+  width: auto;
   max-width: 100%;
   object-fit: contain;
   margin: 0 auto;
@@ -681,9 +704,9 @@ button {
 
 .feature-title {
   font-family: var(--font-heading);
-  font-size: 36px;
+  font-size: clamp(30px, 3vw, 42px);
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.15;
   letter-spacing: -1.5px;
   color: var(--color-white);
 }
@@ -741,7 +764,7 @@ button {
   grid-column: 1 / 13;
   text-align: center;
   max-width: 900px;
-  margin: 0 auto 50px;
+  margin: 0 auto 64px;
 }
 
 .customer-intro-title {
@@ -758,8 +781,8 @@ button {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--grid-gap);
-  align-items: center;
-  margin-bottom: 76px;
+  align-items: start;
+  margin-bottom: 96px;
   width: 100%;
 }
 
@@ -771,7 +794,11 @@ button {
   grid-column: 1 / 6;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  /* Pinned beside the tall media stack so the copy never floats in empty space */
+  position: sticky;
+  top: calc(50vh - 120px);
+  align-self: start;
 }
 
 .badge-label {
@@ -791,10 +818,10 @@ button {
 
 .story-heading {
   font-family: var(--font-heading);
-  font-size: clamp(40px, 4vw, 54px);
+  font-size: clamp(30px, 3vw, 42px);
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -2px;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
   color: var(--color-dark);
 }
 
@@ -870,13 +897,10 @@ button {
   grid-column: 8 / 13;
 }
 
-/* --- 10b. CALL TO ACTION SECTION (White #ffffff Background) --- */
-/* --- 10b. BOTTOM PAGE GROUP (CTA + Footer Container) --- */
+/* --- 10b. BOTTOM PAGE GROUP (CTA Card + Footer Container) --- */
 .bottom-page-group {
   width: 100%;
   background-color: var(--color-white);
-  min-height: calc(100vh + 40px);
-  min-height: calc(100dvh + 40px);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -885,48 +909,176 @@ button {
 .cta-section {
   width: 100%;
   background-color: transparent;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 64px;
-  padding-bottom: 64px;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section-sm);
   box-sizing: border-box;
 }
 
-.cta-banner {
-  text-align: center;
+/* Indigo waitlist card: bookends the indigo hero card */
+.cta-card {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--grid-gap);
+  align-items: center;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  padding: 72px 0 72px 72px;
+}
+
+.cta-content {
+  grid-column: 1 / 8;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 36px;
-  width: 100%;
+  align-items: flex-start;
+  gap: 24px;
 }
 
 .cta-title {
   font-family: var(--font-heading);
-  font-size: clamp(48px, 5.2vw, 76px);
+  font-size: clamp(40px, 4.4vw, 64px);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.1;
   letter-spacing: -2px;
-  color: var(--color-dark);
+  color: var(--color-white);
+}
+
+.cta-lead {
+  font-size: 20px;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 520px;
 }
 
 .cta-form-wrap {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.cta-legal {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 520px;
+}
+
+.cta-legal a {
+  color: var(--color-white);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cta-legal a:hover {
+  color: var(--color-accent);
+}
+
+.cta-media {
+  grid-column: 8 / 13;
+  aspect-ratio: 1 / 1;
+  max-height: 440px;
+  justify-self: center;
   width: 100%;
 }
 
-.cta-form-wrap .wishlist-form {
-  justify-content: center;
+.cta-media img {
+  width: 100%;
+  height: 100%;
 }
 
-/* --- 11. FOOTER (#1E1E1E Dark Card within Desktop Columns) --- */
+/* --- 10c. FAQ ACCORDION (Native details/summary) --- */
+.faq-section {
+  width: 100%;
+  padding-top: var(--space-section-sm);
+  padding-bottom: var(--space-section);
+}
+
+.faq-inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.faq-title {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 3.4vw, 48px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  color: var(--color-dark);
+  margin-bottom: 32px;
+}
+
+.faq-list {
+  border-top: 1px solid rgba(13, 20, 40, 0.12);
+}
+
+.faq-item {
+  border-bottom: 1px solid rgba(13, 20, 40, 0.12);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 0;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-dark);
+  transition: color 0.2s ease;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary:hover {
+  color: var(--color-primary);
+}
+
+/* Plus that turns into a minus when the answer is open */
+.faq-item summary::after {
+  content: '';
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--color-white), var(--color-white)) center / 12px 2px no-repeat,
+    linear-gradient(var(--color-white), var(--color-white)) center / 2px 12px no-repeat,
+    var(--color-primary);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq-item p {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--color-dark);
+  max-width: 720px;
+  padding-bottom: 24px;
+}
+
+.faq-item p a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- 11. FOOTER (White, Navy Text, Hairline Top Rule) --- */
 .footer-wrapper {
   width: 100%;
   background-color: var(--color-white);
@@ -938,15 +1090,11 @@ button {
 
 .footer-card {
   width: 100%;
-  background-color: var(--color-dark);
-  color: var(--color-white);
-  border-top-left-radius: var(--radius-lg);
-  border-top-right-radius: var(--radius-lg);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  padding: 60px 64px 32px;
+  background-color: var(--color-white);
+  color: var(--color-dark);
+  border-top: 1px solid rgba(13, 20, 40, 0.1);
+  padding: 56px 0 40px;
   box-sizing: border-box;
-  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.04);
 }
 
 .footer-grid-row {
@@ -973,9 +1121,8 @@ button {
 }
 
 .footer-logo-img {
-  width: 130px;
+  width: 150px;
   height: auto;
-  filter: brightness(0) invert(1);
   display: block;
 }
 
@@ -993,7 +1140,7 @@ button {
 .footer-copyright {
   font-size: 14px;
   line-height: 1.4;
-  color: var(--color-white);
+  color: var(--color-dark);
   opacity: 0.9;
 }
 
@@ -1013,7 +1160,7 @@ button {
 .footer-text-link {
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-white);
+  color: var(--color-dark);
   opacity: 0.9;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -1021,7 +1168,7 @@ button {
 }
 
 .footer-text-link:hover {
-  color: var(--color-accent);
+  color: var(--color-primary);
   opacity: 1;
 }
 
@@ -1039,19 +1186,19 @@ button {
   font-size: clamp(28px, 2.75vw, 38px);
   font-weight: 700;
   letter-spacing: -1px;
-  color: var(--color-white);
+  color: var(--color-dark);
   line-height: 1.2;
   transition: color 0.2s ease;
 }
 
 .footer-email-link:hover {
-  color: var(--color-accent);
+  color: var(--color-primary);
 }
 
 .footer-tagline {
   font-size: 16px;
   font-weight: 500;
-  color: var(--color-white);
+  color: var(--color-dark);
   margin: 0;
 }
 
@@ -1066,12 +1213,12 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-white);
+  color: var(--color-dark);
   transition: color 0.2s ease;
 }
 
 .footer-social-link:hover {
-  color: var(--color-accent);
+  color: var(--color-primary);
 }
 
 /* --- 12. RESPONSIVE BREAKPOINTS --- */
@@ -1312,24 +1459,37 @@ button {
     width: 100%;
   }
 
+  .story-col-text {
+    position: static;
+  }
+
   .story-main-card {
     max-height: 380px;
   }
 
   /* 6. CTA & Footer */
-  .bottom-page-group {
-    min-height: calc(100vh + 40px);
+  .cta-card {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+    padding: 0 40px 48px;
+    gap: 8px;
+  }
+
+  .cta-media {
+    width: min(100%, 360px);
+    max-height: 320px;
+    align-self: center;
   }
 
   .cta-section {
     padding-top: 48px;
     padding-bottom: 48px;
-    min-height: auto;
   }
 
   .footer-card {
     width: 100%;
-    padding: 44px 36px 24px;
+    padding: 44px 0 24px;
   }
 
   .footer-grid-row {
@@ -1423,14 +1583,21 @@ button {
     padding-bottom: 52px;
   }
 
-  .bottom-page-group {
-    min-height: calc(100dvh + 40px);
-  }
-
   .cta-section {
     padding-top: 40px;
     padding-bottom: 40px;
-    min-height: auto;
+  }
+
+  .cta-card {
+    padding: 0 20px 32px;
+  }
+
+  .cta-media {
+    max-height: 240px;
+  }
+
+  .cta-lead {
+    font-size: 16px;
   }
 
   /* 3. Typography & Titles */
@@ -1522,12 +1689,11 @@ button {
   }
 
   .partners-label {
-    font-size: 11px;
-    letter-spacing: 1px;
+    font-size: 14px;
   }
 
   .partner-logo-item img {
-    max-height: 40px;
+    height: 46px;
   }
 
   /* 6. Platform Showcase on Mobile */
@@ -1584,8 +1750,16 @@ button {
   /* 8. Footer Optimization & Touch Targets */
   .footer-card {
     width: 100%;
-    padding: 36px 20px 20px;
-    border-radius: 16px 16px 0 0;
+    padding: 36px 0 20px;
+  }
+
+  .faq-item summary {
+    font-size: 17px;
+    padding: 20px 0;
+  }
+
+  .faq-item p {
+    font-size: 15px;
   }
 
   .footer-grid-row {
@@ -1724,6 +1898,10 @@ button {
   user-select: none;
 }
 
+#grid-toggle-btn[hidden] {
+  display: none;
+}
+
 #grid-toggle-btn:hover {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.35);
@@ -1773,7 +1951,7 @@ button {
   flex: 1;
   padding: 16px 24px;
   border-radius: 100px;
-  border: 1px solid var(--color-border);
+  border: 1px solid transparent;
   font-family: var(--font-body);
   font-size: 16px;
   outline: none;
@@ -1784,12 +1962,43 @@ button {
 }
 
 .wishlist-input::placeholder {
-  color: #888;
+  color: var(--color-muted);
 }
 
 .wishlist-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(55, 26, 238, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(8, 222, 170, 0.45);
+}
+
+.wishlist-btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.wishlist-form {
+  flex-wrap: wrap;
+}
+
+.wishlist-consent {
+  flex-basis: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  max-width: 560px;
+}
+
+.wishlist-consent input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
 }
 
 .wishlist-btn {
@@ -1825,26 +2034,18 @@ button {
 }
 
 .cta-form-wrap .form-feedback.error {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translate(-50%, 0);
-  color: #c93b3b;
-  background: rgba(220, 38, 38, 0.05);
+  color: #b42318;
+  background: var(--color-white);
   padding: 6px 14px;
   border-radius: 100px;
-  border: 1px solid rgba(220, 38, 38, 0.12);
-  animation: gentleFadeSlideCentered 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  white-space: nowrap;
-  z-index: 5;
+  animation: gentleFadeSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .form-feedback.success {
-  color: #059669;
-  background: rgba(8, 222, 170, 0.15);
+  color: var(--color-dark);
+  background: var(--color-accent);
   padding: 10px 20px;
   border-radius: 100px;
-  border: 1px solid rgba(8, 222, 170, 0.35);
   font-weight: 600;
   font-size: 14px;
   animation: gentleFadeSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -1874,8 +2075,22 @@ button {
 
 @media (max-width: 480px) {
   .cta-form-wrap .form-feedback.error {
-    white-space: normal;
     max-width: 100%;
     border-radius: 12px;
+  }
+}
+
+/* --- 14. REDUCED MOTION --- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -74,6 +74,8 @@
 }
 
 html {
+  overflow-x: hidden;
+  overflow-x: clip; /* iOS Safari ignores body overflow-x; clip keeps sideways-sliding cards from widening the page */
   font-size: 16px;
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h);
@@ -87,6 +89,7 @@ body {
   background-color: var(--color-white);
   line-height: 1.6;
   overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -125,8 +128,6 @@ video {
 .hero-visual-card video,
 .showcase-card img,
 .showcase-card video,
-.showcase-step-media img,
-.showcase-step-media video,
 .story-main-card img,
 .story-main-card video,
 .story-pair-item img,
@@ -151,7 +152,6 @@ picture {
 /* Clip card media to the card's rounded corners (picture wrapper breaks radius inheritance) */
 .hero-visual-card,
 .showcase-card,
-.showcase-step-media,
 .story-main-card,
 .story-pair-item {
   overflow: hidden;
@@ -603,8 +603,8 @@ button {
   background-color: var(--color-white);
 }
 
-/* Hidden on desktop; rendered inline within steps on mobile/tablet */
-.showcase-step-media {
+/* Progress dots: mobile/tablet only (desktop shows the steps side by side) */
+.showcase-dots {
   display: none;
 }
 
@@ -614,7 +614,6 @@ button {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding-bottom: 12vh;
 }
 
 .showcase-step {
@@ -632,6 +631,11 @@ button {
 .showcase-step.active {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Last step is only as tall as the pinned card: the section ends as soon as its text sits beside the card */
+.showcase-step:last-of-type {
+  min-height: min(490px, 36vw);
 }
 
 .feature-title {
@@ -1386,8 +1390,59 @@ html.dialog-open {
     margin-bottom: 20px;
   }
 
+  /* Sticky media on mobile/tablet: the card pins under the header and swaps as steps scroll beneath */
   .showcase-sticky-col {
-    display: none !important;
+    position: sticky;
+    top: var(--header-h);
+    z-index: 5;
+    width: 100%;
+    max-width: 640px;
+    max-height: none;
+    aspect-ratio: auto;
+    margin: 0 auto;
+    padding: 12px 0 16px;
+    background-color: var(--color-primary); /* masks step text scrolling behind the card */
+  }
+
+  /* Soft fade so text passing under the card dissolves instead of being cut off */
+  .showcase-sticky-col::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 28px;
+    background: linear-gradient(var(--color-primary), rgba(55, 26, 238, 0));
+    pointer-events: none;
+  }
+
+  .showcase-card-stack {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    max-height: 34vh;
+    max-height: 34svh; /* svh stays fixed while the iOS toolbar collapses, so the pinned card never resizes mid-scroll */
+    margin: 0 auto;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  }
+
+  .showcase-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .showcase-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .showcase-dots span.active {
+    width: 18px;
+    background-color: var(--color-accent);
   }
 
   .showcase-steps-col {
@@ -1399,31 +1454,40 @@ html.dialog-open {
     padding-bottom: 0;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 0;
   }
 
   .showcase-step {
-    min-height: auto !important;
-    opacity: 1 !important;
-    transform: none !important;
-    display: flex;
-    flex-direction: column;
+    /* Text starts right under the pinned card; height just enough for one swap per step */
+    min-height: 34vh;
+    min-height: 34svh;
+    justify-content: flex-start;
+    transform: none;
     gap: 12px;
-    padding: 0;
+    padding: 20px 0 0;
   }
 
-  .showcase-step-media {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    max-height: 260px;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
-    margin-bottom: 4px;
+  .showcase-step:last-of-type {
+    min-height: 0;
+    padding-bottom: 24px;
   }
 
-  .showcase-step-media.card-fill-white {
-    background-color: var(--color-white);
+  /* Scroll-linked slide (main.js writes transform/opacity every frame), so CSS transitions would only add lag */
+  /* Safari may not clip transformed children to a rounded overflow:hidden box; paint containment always does */
+  .platform-showcase.is-scrubbing .showcase-card-stack {
+    overflow: clip;
+    contain: paint;
+    isolation: isolate;
+  }
+
+  .platform-showcase.is-scrubbing .showcase-card {
+    opacity: 1;
+    transition: none;
+    will-change: transform;
+  }
+
+  .platform-showcase.is-scrubbing .showcase-step {
+    transition: none;
   }
 
   .feature-title {
@@ -1698,12 +1762,7 @@ html.dialog-open {
   }
 
   .showcase-steps-col {
-    gap: 24px;
-  }
-
-  .showcase-step-media {
-    max-height: 220px;
-    border-radius: 14px;
+    gap: 0;
   }
 
   /* 7. Stories Cards & Natural Reading Order */

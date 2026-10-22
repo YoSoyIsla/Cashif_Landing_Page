@@ -249,48 +249,135 @@ function initPlatformShowcase() {
   const cards = showcase.querySelectorAll('.showcase-card');
   if (!steps.length || !cards.length) return;
 
+  const stickyCol = showcase.querySelector('.showcase-sticky-col');
+  const dots = showcase.querySelectorAll('.showcase-dots span');
+  const mobileQuery = window.matchMedia('(max-width: 1199.98px)');
   let activeIndex = -1;
+  let scrubbing = false;
+  let ticking = false;
 
-  function update() {
-    if (window.innerWidth <= 1199.98) {
-      steps.forEach(step => step.classList.add('active'));
-      return;
-    }
+  function setActive(index) {
+    if (index === activeIndex) return;
+    activeIndex = index;
+    cards.forEach((card, i) => card.classList.toggle('active', i === index));
+    steps.forEach((step, i) => step.classList.toggle('active', i === index));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+  }
 
-    const vh = window.innerHeight;
-    const triggerLine = vh * 0.5;
-
+  // Desktop: the step whose center is closest to the middle of the viewport wins; cards crossfade via CSS.
+  function updateDesktop() {
+    const triggerLine = window.innerHeight * 0.5;
     let bestIndex = 0;
     let minDistance = Infinity;
 
     steps.forEach((step, index) => {
       const rect = step.getBoundingClientRect();
-      const center = rect.top + rect.height * 0.5;
-      const distance = Math.abs(center - triggerLine);
-
+      const distance = Math.abs(rect.top + rect.height * 0.5 - triggerLine);
       if (distance < minDistance) {
         minDistance = distance;
         bestIndex = index;
       }
     });
 
-    if (bestIndex !== activeIndex) {
-      activeIndex = bestIndex;
+    setActive(bestIndex);
+  }
 
-      // Transition left sticky cards
-      cards.forEach((card, index) => {
-        card.classList.toggle('active', index === activeIndex);
-      });
+  // Mobile/tablet: cards slide sideways with the scroll. The slide runs while the next step's text crosses the
+  // middle of the space under the pinned card, so the new image has landed before that text is read.
+  // When scrolling stops between two steps, the card settles on the nearer one instead of resting half-slid.
+  let shown = 0;
+  let idleTimer = 0;
 
-      // Highlight active text step
-      steps.forEach((step, index) => {
-        step.classList.toggle('active', index === activeIndex);
-      });
+  function scrollPosition() {
+    // clientHeight ignores the iOS toolbar resize, so the slide doesn't twitch when the address bar collapses
+    const vh = document.documentElement.clientHeight;
+    const cardBottom = Math.max(stickyCol.getBoundingClientRect().bottom, 0);
+    const space = Math.max(vh - cardBottom, 1);
+    const from = cardBottom + space * 0.8;
+    const to = cardBottom + space * 0.4;
+    let position = 0;
+
+    for (let i = 1; i < steps.length; i++) {
+      const top = steps[i].getBoundingClientRect().top;
+      const t = Math.min(Math.max((from - top) / (from - to), 0), 1);
+      position += t * t * (3 - 2 * t); // smoothstep: eases in and out of every slide
+    }
+    return position;
+  }
+
+  function render(position) {
+    cards.forEach((card, i) => {
+      card.style.transform = `translate3d(${(i - position) * 104}%, 0, 0)`;
+      card.style.visibility = Math.abs(i - position) < 1 ? '' : 'hidden';
+    });
+    steps.forEach((step, i) => {
+      step.style.opacity = String(1 - 0.65 * Math.min(Math.abs(position - i), 1));
+    });
+    setActive(Math.round(position));
+  }
+
+  // The card follows a target instead of jumping to it: the raw scroll position while the finger moves,
+  // the nearest step once scrolling has paused. Easing toward it keeps both switches seamless.
+  let target = 0;
+  let following = false;
+
+  function follow() {
+    if (!scrubbing) { following = false; return; }
+    shown += (target - shown) * 0.3;
+    if (Math.abs(target - shown) < 0.002) shown = target;
+    render(shown);
+    following = shown !== target;
+    if (following) requestAnimationFrame(follow);
+  }
+
+  function setTarget(value) {
+    target = value;
+    if (!following) {
+      following = true;
+      requestAnimationFrame(follow);
     }
   }
 
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
+  function updateMobile() {
+    const position = scrollPosition();
+    clearTimeout(idleTimer);
+
+    if (prefersReducedMotion()) {
+      shown = target = Math.round(position);
+      render(shown);
+      return;
+    }
+
+    setTarget(position);
+    idleTimer = setTimeout(() => setTarget(Math.round(scrollPosition())), 140);
+  }
+
+  function clearInlineStyles() {
+    cards.forEach((card) => { card.style.transform = ''; card.style.visibility = ''; });
+    steps.forEach((step) => { step.style.opacity = ''; });
+  }
+
+  function update() {
+    ticking = false;
+    const mobile = mobileQuery.matches && !!stickyCol;
+    if (mobile !== scrubbing) {
+      scrubbing = mobile;
+      showcase.classList.toggle('is-scrubbing', mobile);
+      if (mobile) shown = target = Math.round(scrollPosition());
+      else clearInlineStyles();
+    }
+    if (scrubbing) updateMobile();
+    else updateDesktop();
+  }
+
+  function requestUpdate() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate);
   update();
 }
 

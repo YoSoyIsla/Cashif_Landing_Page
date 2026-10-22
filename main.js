@@ -9,6 +9,40 @@ function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+// Scroll position that puts `el` just below the fixed header
+function elementScrollTop(el) {
+  const header = document.querySelector('.site-header');
+  const headerHeight = header ? header.offsetHeight : 0;
+  const gap = el.dataset.scrollGap ? Number(el.dataset.scrollGap) : 0;
+  return el.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
+}
+
+// Single entry point for every in-page jump (anchors, logo, CTA)
+function smoothScrollToElement(el, onArrive) {
+  if (window.lerpScroll && window.lerpScroll.enabled) {
+    window.lerpScroll.scrollToElement(el, onArrive);
+    return;
+  }
+
+  // 'instant', not 'auto': 'auto' inherits html { scroll-behavior: smooth } and still animates
+  const behavior = prefersReducedMotion() ? 'instant' : 'smooth';
+  window.scrollTo({ top: elementScrollTop(el), behavior });
+
+  // Native smooth scroll can't follow layout shifts: correct once it settles
+  let settled = false;
+  const settle = () => {
+    if (settled) return;
+    settled = true;
+    const drift = elementScrollTop(el) - window.scrollY;
+    if (Math.abs(drift) > 2) window.scrollTo({ top: elementScrollTop(el), behavior: 'instant' });
+    if (onArrive) onArrive();
+  };
+  if ('onscrollend' in window && behavior === 'smooth') {
+    window.addEventListener('scrollend', settle, { once: true });
+  }
+  setTimeout(settle, behavior === 'smooth' ? 1200 : 0);
+}
+
 // --- 1. Smooth Lerp Scroll Engine (Linear Interpolation, No Motion Blur) ---
 class LerpSmoothScroll {
   constructor() {
@@ -17,6 +51,11 @@ class LerpSmoothScroll {
     this.ease = 0.085; // Natural inertia damping
     this.isScrolling = false;
     this.rafId = null;
+    this.enabled = false;
+    // When set, the target is re-measured every frame so layout changes mid-scroll
+    // (FAQ animating, images decoding, fonts swapping) never leave us at a stale position
+    this.targetEl = null;
+    this.onArrive = null;
 
     this.onWheel = this.onWheel.bind(this);
     this.onScroll = this.onScroll.bind(this);
@@ -33,6 +72,7 @@ class LerpSmoothScroll {
       return;
     }
 
+    this.enabled = true;
     document.documentElement.style.scrollBehavior = 'auto';
 
     window.addEventListener('wheel', this.onWheel, { passive: false });
@@ -48,19 +88,44 @@ class LerpSmoothScroll {
     ) - window.innerHeight;
   }
 
+  clamp(y) {
+    return Math.max(0, Math.min(y, this.maxScroll()));
+  }
+
   scrollTo(targetY) {
+    this.targetEl = null;
+    this.onArrive = null;
     this.currentY = window.scrollY;
-    this.targetY = Math.max(0, Math.min(targetY, this.maxScroll()));
+    this.targetY = this.clamp(targetY);
+    this.start();
+  }
+
+  scrollToElement(el, onArrive) {
+    this.targetEl = el;
+    this.onArrive = onArrive || null;
+    this.currentY = window.scrollY;
+    this.targetY = this.clamp(elementScrollTop(el));
+    this.start();
+  }
+
+  start() {
     if (!this.isScrolling) {
       this.isScrolling = true;
       this.rafId = requestAnimationFrame(this.update);
     }
   }
 
+  // Any manual wheel/key input cancels a pending anchor jump
+  releaseTarget() {
+    this.targetEl = null;
+    this.onArrive = null;
+  }
+
   onWheel(e) {
     // Let an open dialog scroll its own content natively
     if (document.querySelector('dialog[open]')) return;
     e.preventDefault();
+    this.releaseTarget();
 
     let delta = e.deltaY;
     if (e.deltaMode === 1) { // Firefox line mode
@@ -88,6 +153,7 @@ class LerpSmoothScroll {
 
     if (delta !== 0) {
       e.preventDefault();
+      this.releaseTarget();
       this.targetY = Math.max(0, Math.min(this.targetY + delta, this.maxScroll()));
       if (!this.isScrolling) {
         this.isScrolling = true;
@@ -108,6 +174,9 @@ class LerpSmoothScroll {
   }
 
   update() {
+    if (this.targetEl) this.targetY = elementScrollTop(this.targetEl);
+    this.targetY = this.clamp(this.targetY);
+
     const diff = this.targetY - this.currentY;
     this.currentY += diff * this.ease;
 
@@ -116,6 +185,9 @@ class LerpSmoothScroll {
       window.scrollTo(0, Math.round(this.currentY));
       this.isScrolling = false;
       updateAllScrollEffects();
+      const done = this.onArrive;
+      this.releaseTarget();
+      if (done) done();
       return;
     }
 
@@ -305,13 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('menu-open');
       }
 
-      if (window.lerpScroll && !window.matchMedia('(pointer: coarse)').matches) {
+      if (window.lerpScroll && window.lerpScroll.enabled) {
         window.lerpScroll.scrollTo(0);
       } else {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' });
       }
     });
   });
@@ -337,34 +406,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('menu-open');
       }
 
-      // Calculate target scroll position taking fixed header into account
-      const headerHeight = document.querySelector('.site-header')?.offsetHeight || 72;
-      let targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight;
+      // A section can point the jump at an inner element (e.g. the waitlist card)
+      const anchor = targetEl.querySelector('[data-scroll-anchor]') || targetEl;
 
-      if (targetId === 'bekleme-listesi') {
-        const maxScroll = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight
-        ) - window.innerHeight;
-        targetPosition = maxScroll;
-      }
-
-      if (window.lerpScroll && !window.matchMedia('(pointer: coarse)').matches) {
-        window.lerpScroll.scrollTo(targetPosition);
-      } else {
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-      }
-
-      // If target is the wishlist form, focus input
-      if (targetId === 'bekleme-listesi') {
-        const input = targetEl.querySelector('.wishlist-input');
-        if (input) {
-          setTimeout(() => input.focus(), 650);
-        }
-      }
+      // Focus the email field only after arriving, without letting focus() scroll the page
+      const input = targetId === 'bekleme-listesi' ? targetEl.querySelector('.wishlist-input') : null;
+      smoothScrollToElement(anchor, input ? () => input.focus({ preventScroll: true }) : null);
     });
   });
 

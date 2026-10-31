@@ -511,6 +511,39 @@ document.addEventListener('DOMContentLoaded', () => {
   // Smooth open/close for the FAQ accordion
   initFaqAccordion();
 
+  // Interactive 12-Column Grid Overlay Toggle (developer tool: local preview only)
+  const gridBtn = document.getElementById('grid-toggle-btn');
+  const gridOverlay = document.getElementById('grid-overlay');
+  const isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+
+  if (gridBtn && gridOverlay && !isLocalPreview) {
+    gridBtn.remove();
+    gridOverlay.remove();
+  } else if (gridBtn && gridOverlay) {
+    gridBtn.hidden = false;
+    const updateBtnState = (isActive) => {
+      const label = gridBtn.querySelector('.grid-btn-label');
+      if (label) label.textContent = isActive ? '12-Col Grid: ON' : '12-Col Grid: OFF';
+      gridBtn.classList.toggle('is-active', isActive);
+      gridBtn.setAttribute('aria-pressed', isActive);
+    };
+
+    const toggleGrid = () => {
+      const isActive = gridOverlay.classList.toggle('active');
+      updateBtnState(isActive);
+    };
+
+    gridBtn.addEventListener('click', toggleGrid);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.altKey && (e.key === 'g' || e.key === 'G')) {
+        toggleGrid();
+      }
+    });
+
+    updateBtnState(gridOverlay.classList.contains('active'));
+  }
+
   // KVKK notice opens in a dialog instead of a separate page
   initLegalDialog();
 });
@@ -626,22 +659,36 @@ function initFaqAccordion() {
   });
 }
 
-// --- 4. Interactive Navbar Logo Touch Support ---
+// --- 4. Interactive Navbar Logo (Native Animated SVG on Hover) ---
 function initNavbarLogoInteraction() {
   const brandLogo = document.querySelector('.brand-logo');
   if (!brandLogo) return;
 
-  // Touch device responsiveness: brief tap toggles hover state then reverts
-  let touchTimeout = null;
-  brandLogo.addEventListener('touchstart', () => {
-    clearTimeout(touchTimeout);
-    brandLogo.classList.add('is-hovered');
-  }, { passive: true });
+  const svg = brandLogo.querySelector('svg');
+  if (!svg) return;
 
-  brandLogo.addEventListener('touchend', () => {
-    touchTimeout = setTimeout(() => {
-      brandLogo.classList.remove('is-hovered');
-    }, 450);
+  // Replay animation on hover
+  brandLogo.addEventListener('mouseenter', () => {
+    try {
+      if (typeof svg.setCurrentTime === 'function') {
+        svg.setCurrentTime(0);
+      }
+      if (typeof svg.unpauseAnimations === 'function') {
+        svg.unpauseAnimations();
+      }
+    } catch (_) {}
+  });
+
+  // Mobile touch: replay animation on tap
+  brandLogo.addEventListener('touchstart', () => {
+    try {
+      if (typeof svg.setCurrentTime === 'function') {
+        svg.setCurrentTime(0);
+      }
+      if (typeof svg.unpauseAnimations === 'function') {
+        svg.unpauseAnimations();
+      }
+    } catch (_) {}
   }, { passive: true });
 }
 

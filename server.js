@@ -34,7 +34,7 @@ function handleFileChange(relPath) {
   }, 40);
 }
 
-['index.html', 'style.css', 'main.js', 'Hoover_Logo_Animation.json'].forEach(file => {
+['index.html', 'style.css', 'main.js'].forEach(file => {
   const p = path.join(ROOT_DIR, file);
   if (fs.existsSync(p)) {
     fs.watch(p, (eventType) => {
@@ -60,6 +60,7 @@ const MIME_TYPES = {
   '.mjs': 'application/javascript; charset=UTF-8',
   '.css': 'text/css; charset=UTF-8',
   '.json': 'application/json; charset=UTF-8',
+  '.webmanifest': 'application/manifest+json; charset=UTF-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -70,7 +71,8 @@ const MIME_TYPES = {
   '.woff': 'font/woff',
   '.ttf': 'font/ttf',
   '.ico': 'image/x-icon',
-  '.mp4': 'video/mp4'
+  '.mp4': 'video/mp4',
+  '.splinecode': 'application/octet-stream'
 };
 
 const LIVERELOAD_SCRIPT = `

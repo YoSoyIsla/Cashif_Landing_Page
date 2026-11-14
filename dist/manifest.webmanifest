@@ -1,0 +1,13 @@
+{
+  "name": "cashif",
+  "short_name": "cashif",
+  "description": "Finansta kaybolma, cashif’le keşfet.",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#371aee",
+  "icons": [
+    { "src": "./assets/images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./assets/images/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

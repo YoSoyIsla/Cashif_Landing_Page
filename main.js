@@ -2,9 +2,51 @@
  * Cashif Landing Page Logic
  * - Buttery Lerp Smooth Scrolling (Zero motion blur)
  * - Sticky Split-Scroll Feature Showcase in Purple Platform Section
- * - Interactive 12-Column Grid Toggle
  * - Mobile Navigation Menu
  */
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Scroll position that puts `el` just below the fixed header
+function elementScrollTop(el) {
+  const header = document.querySelector('.site-header');
+  const headerHeight = header ? header.offsetHeight : 0;
+  const gap = el.dataset.scrollGap ? Number(el.dataset.scrollGap) : 0;
+  return el.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
+}
+
+// Single entry point for every in-page jump (anchors, logo, CTA)
+function smoothScrollToElement(el, onArrive) {
+  if (window.lerpScroll && window.lerpScroll.enabled) {
+    window.lerpScroll.scrollToElement(el, onArrive);
+    return;
+  }
+
+  // 'instant', not 'auto': 'auto' inherits html { scroll-behavior: smooth } and still animates
+  const behavior = prefersReducedMotion() ? 'instant' : 'smooth';
+  window.scrollTo({ top: elementScrollTop(el), behavior });
+
+  // Native smooth scroll can't follow layout shifts: correct once it settles
+  let settled = false;
+  const settle = () => {
+    if (settled) return;
+    settled = true;
+    const drift = elementScrollTop(el) - window.scrollY;
+    if (Math.abs(drift) > 2) window.scrollTo({ top: elementScrollTop(el), behavior: 'instant' });
+    if (onArrive) onArrive();
+  };
+  if ('onscrollend' in window && behavior === 'smooth') {
+    window.addEventListener('scrollend', settle, { once: true });
+  }
+  setTimeout(settle, behavior === 'smooth' ? 1200 : 0);
+}
+
+function isSmartTV() {
+  if (typeof navigator === 'undefined') return false;
+  return /TV|SmartTV|Tizen|webOS|Web0S|GoogleTV|AppleTV|HbbTV|NetCast|Vewd/i.test(navigator.userAgent);
+}
 
 // --- 1. Smooth Lerp Scroll Engine (Linear Interpolation, No Motion Blur) ---
 class LerpSmoothScroll {
@@ -14,6 +56,11 @@ class LerpSmoothScroll {
     this.ease = 0.085; // Natural inertia damping
     this.isScrolling = false;
     this.rafId = null;
+    this.enabled = false;
+    // When set, the target is re-measured every frame so layout changes mid-scroll
+    // (FAQ animating, images decoding, fonts swapping) never leave us at a stale position
+    this.targetEl = null;
+    this.onArrive = null;
 
     this.onWheel = this.onWheel.bind(this);
     this.onScroll = this.onScroll.bind(this);
@@ -25,11 +72,12 @@ class LerpSmoothScroll {
   }
 
   init() {
-    // Only on desktop pointer devices
-    if (window.matchMedia('(pointer: coarse)').matches) {
+    // Only on desktop pointer devices, and never when the visitor asked for reduced motion or is on a Smart TV
+    if (window.matchMedia('(pointer: coarse)').matches || prefersReducedMotion() || isSmartTV()) {
       return;
     }
 
+    this.enabled = true;
     document.documentElement.style.scrollBehavior = 'auto';
 
     window.addEventListener('wheel', this.onWheel, { passive: false });
@@ -45,8 +93,44 @@ class LerpSmoothScroll {
     ) - window.innerHeight;
   }
 
+  clamp(y) {
+    return Math.max(0, Math.min(y, this.maxScroll()));
+  }
+
+  scrollTo(targetY) {
+    this.targetEl = null;
+    this.onArrive = null;
+    this.currentY = window.scrollY;
+    this.targetY = this.clamp(targetY);
+    this.start();
+  }
+
+  scrollToElement(el, onArrive) {
+    this.targetEl = el;
+    this.onArrive = onArrive || null;
+    this.currentY = window.scrollY;
+    this.targetY = this.clamp(elementScrollTop(el));
+    this.start();
+  }
+
+  start() {
+    if (!this.isScrolling) {
+      this.isScrolling = true;
+      this.rafId = requestAnimationFrame(this.update);
+    }
+  }
+
+  // Any manual wheel/key input cancels a pending anchor jump
+  releaseTarget() {
+    this.targetEl = null;
+    this.onArrive = null;
+  }
+
   onWheel(e) {
+    // Let an open dialog or active mobile menu scroll its own content natively
+    if (document.querySelector('dialog[open]') || document.body.classList.contains('menu-open')) return;
     e.preventDefault();
+    this.releaseTarget();
 
     let delta = e.deltaY;
     if (e.deltaMode === 1) { // Firefox line mode
@@ -64,15 +148,18 @@ class LerpSmoothScroll {
   onKeyDown(e) {
     const activeTag = document.activeElement ? document.activeElement.tagName : '';
     if (['INPUT', 'TEXTAREA'].includes(activeTag)) return;
+    if (document.querySelector('dialog[open]')) return;
 
     let delta = 0;
-    if (e.key === 'ArrowDown') delta = 90;
-    else if (e.key === 'ArrowUp') delta = -90;
+    const arrowDelta = Math.max(90, Math.round(window.innerHeight * 0.18));
+    if (e.key === 'ArrowDown') delta = arrowDelta;
+    else if (e.key === 'ArrowUp') delta = -arrowDelta;
     else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) delta = window.innerHeight * 0.8;
     else if (e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) delta = -window.innerHeight * 0.8;
 
     if (delta !== 0) {
       e.preventDefault();
+      this.releaseTarget();
       this.targetY = Math.max(0, Math.min(this.targetY + delta, this.maxScroll()));
       if (!this.isScrolling) {
         this.isScrolling = true;
@@ -93,6 +180,9 @@ class LerpSmoothScroll {
   }
 
   update() {
+    if (this.targetEl) this.targetY = elementScrollTop(this.targetEl);
+    this.targetY = this.clamp(this.targetY);
+
     const diff = this.targetY - this.currentY;
     this.currentY += diff * this.ease;
 
@@ -101,6 +191,9 @@ class LerpSmoothScroll {
       window.scrollTo(0, Math.round(this.currentY));
       this.isScrolling = false;
       updateAllScrollEffects();
+      const done = this.onArrive;
+      this.releaseTarget();
+      if (done) done();
       return;
     }
 
@@ -131,22 +224,6 @@ function updateAllScrollEffects() {
     const curveH = maxCurveDepth * (1 - progress);
     curvePath.setAttribute('d', `M 0,0 Q 720,${curveH.toFixed(1)} 1440,0 L 1440,120 L 0,120 Z`);
   }
-
-  // 2. Parallax Depth on Purple Section Only (White sections remain completely static & intact)
-  if (platformSection && platformHeader) {
-    const platRect = platformSection.getBoundingClientRect();
-    if (platRect.top < vh && platRect.bottom > 0) {
-      // enterProgress: 0 when purple enters viewport, 1 when it reaches top
-      const enterProgress = Math.max(0, Math.min(1, (vh - platRect.top) / vh));
-      // Purple header smoothly floats upward with parallax depth, 100% full opacity always
-      const headerOffset = (1 - enterProgress) * 110;
-      platformHeader.style.transform = `translate3d(0, ${headerOffset.toFixed(1)}px, 0)`;
-    } else if (platRect.top >= vh) {
-      platformHeader.style.transform = 'translate3d(0, 110px, 0)';
-    } else {
-      platformHeader.style.transform = 'translate3d(0, 0, 0)';
-    }
-  }
 }
 
 // --- 2. Purple Platform Section Sticky Image Scroll Showcase ---
@@ -158,43 +235,135 @@ function initPlatformShowcase() {
   const cards = showcase.querySelectorAll('.showcase-card');
   if (!steps.length || !cards.length) return;
 
+  const stickyCol = showcase.querySelector('.showcase-sticky-col');
+  const dots = showcase.querySelectorAll('.showcase-dots span');
+  const mobileQuery = window.matchMedia('(max-width: 1299.98px)');
   let activeIndex = -1;
+  let scrubbing = false;
+  let ticking = false;
 
-  function update() {
-    const vh = window.innerHeight;
-    const triggerLine = vh * 0.5;
+  function setActive(index) {
+    if (index === activeIndex) return;
+    activeIndex = index;
+    cards.forEach((card, i) => card.classList.toggle('active', i === index));
+    steps.forEach((step, i) => step.classList.toggle('active', i === index));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+  }
 
+  // Desktop: the step whose center is closest to the middle of the viewport wins; cards crossfade via CSS.
+  function updateDesktop() {
+    const triggerLine = window.innerHeight * 0.5;
     let bestIndex = 0;
     let minDistance = Infinity;
 
     steps.forEach((step, index) => {
       const rect = step.getBoundingClientRect();
-      const center = rect.top + rect.height * 0.5;
-      const distance = Math.abs(center - triggerLine);
-
+      const distance = Math.abs(rect.top + rect.height * 0.5 - triggerLine);
       if (distance < minDistance) {
         minDistance = distance;
         bestIndex = index;
       }
     });
 
-    if (bestIndex !== activeIndex) {
-      activeIndex = bestIndex;
+    setActive(bestIndex);
+  }
 
-      // Transition left sticky cards
-      cards.forEach((card, index) => {
-        card.classList.toggle('active', index === activeIndex);
-      });
+  // Mobile/tablet: cards slide sideways with the scroll. The slide runs while the next step's text crosses the
+  // middle of the space under the pinned card, so the new image has landed before that text is read.
+  // When scrolling stops between two steps, the card settles on the nearer one instead of resting half-slid.
+  let shown = 0;
+  let idleTimer = 0;
 
-      // Highlight active text step
-      steps.forEach((step, index) => {
-        step.classList.toggle('active', index === activeIndex);
-      });
+  function scrollPosition() {
+    // clientHeight ignores the iOS toolbar resize, so the slide doesn't twitch when the address bar collapses
+    const vh = document.documentElement.clientHeight;
+    const cardBottom = Math.max(stickyCol.getBoundingClientRect().bottom, 0);
+    const space = Math.max(vh - cardBottom, 1);
+    const from = cardBottom + space * 0.8;
+    const to = cardBottom + space * 0.4;
+    let position = 0;
+
+    for (let i = 1; i < steps.length; i++) {
+      const top = steps[i].getBoundingClientRect().top;
+      const t = Math.min(Math.max((from - top) / (from - to), 0), 1);
+      position += t * t * (3 - 2 * t); // smoothstep: eases in and out of every slide
+    }
+    return position;
+  }
+
+  function render(position) {
+    cards.forEach((card, i) => {
+      card.style.transform = `translate3d(${(i - position) * 104}%, 0, 0)`;
+      card.style.visibility = Math.abs(i - position) < 1 ? '' : 'hidden';
+    });
+    steps.forEach((step, i) => {
+      step.style.opacity = String(1 - 0.65 * Math.min(Math.abs(position - i), 1));
+    });
+    setActive(Math.round(position));
+  }
+
+  // The card follows a target instead of jumping to it: the raw scroll position while the finger moves,
+  // the nearest step once scrolling has paused. Easing toward it keeps both switches seamless.
+  let target = 0;
+  let following = false;
+
+  function follow() {
+    if (!scrubbing) { following = false; return; }
+    shown += (target - shown) * 0.3;
+    if (Math.abs(target - shown) < 0.002) shown = target;
+    render(shown);
+    following = shown !== target;
+    if (following) requestAnimationFrame(follow);
+  }
+
+  function setTarget(value) {
+    target = value;
+    if (!following) {
+      following = true;
+      requestAnimationFrame(follow);
     }
   }
 
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update);
+  function updateMobile() {
+    const position = scrollPosition();
+    clearTimeout(idleTimer);
+
+    if (prefersReducedMotion()) {
+      shown = target = Math.round(position);
+      render(shown);
+      return;
+    }
+
+    setTarget(position);
+    idleTimer = setTimeout(() => setTarget(Math.round(scrollPosition())), 140);
+  }
+
+  function clearInlineStyles() {
+    cards.forEach((card) => { card.style.transform = ''; card.style.visibility = ''; });
+    steps.forEach((step) => { step.style.opacity = ''; });
+  }
+
+  function update() {
+    ticking = false;
+    const mobile = mobileQuery.matches && !!stickyCol;
+    if (mobile !== scrubbing) {
+      scrubbing = mobile;
+      showcase.classList.toggle('is-scrubbing', mobile);
+      if (mobile) shown = target = Math.round(scrollPosition());
+      else clearInlineStyles();
+    }
+    if (scrubbing) updateMobile();
+    else updateDesktop();
+  }
+
+  function requestUpdate() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate);
   update();
 }
 
@@ -207,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
   platformHeader = document.querySelector('.platform-header');
 
   // Initialize Lerp Smooth Scrolling
-  new LerpSmoothScroll();
+  window.lerpScroll = new LerpSmoothScroll();
 
   // Initialize Sticky Split-Scroll Showcase in Purple Platform Section
   initPlatformShowcase();
@@ -217,51 +386,48 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', updateAllScrollEffects);
   updateAllScrollEffects();
 
-  // Mobile Menu Toggle
+  // Mobile Menu Toggle, Backdrop & Scroll Locking
   const menuToggle = document.getElementById('menu-toggle');
   const navLinks = document.getElementById('nav-links');
+  const menuBackdrop = document.getElementById('menu-backdrop');
 
   if (menuToggle && navLinks) {
+    const closeMenu = () => {
+      navLinks.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+    };
+
+    const openMenu = () => {
+      navLinks.classList.add('active');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
+    };
+
     menuToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('active');
-      menuToggle.setAttribute('aria-expanded', isOpen);
-    });
-
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  // Interactive 12-Column Grid Overlay Toggle
-  const gridBtn = document.getElementById('grid-toggle-btn');
-  const gridOverlay = document.getElementById('grid-overlay');
-
-  if (gridBtn && gridOverlay) {
-    const updateBtnState = (isActive) => {
-      const label = gridBtn.querySelector('.grid-btn-label');
-      if (label) label.textContent = isActive ? '12-Col Grid: ON' : '12-Col Grid: OFF';
-      gridBtn.classList.toggle('is-active', isActive);
-      gridBtn.setAttribute('aria-pressed', isActive);
-    };
-
-    const toggleGrid = () => {
-      const isActive = gridOverlay.classList.toggle('active');
-      updateBtnState(isActive);
-    };
-
-    gridBtn.addEventListener('click', toggleGrid);
-
-    window.addEventListener('keydown', (e) => {
-      if (e.altKey && (e.key === 'g' || e.key === 'G')) {
-        toggleGrid();
+      const isOpen = navLinks.classList.contains('active');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
       }
     });
 
-    updateBtnState(gridOverlay.classList.contains('active'));
+    if (menuBackdrop) {
+      menuBackdrop.addEventListener('click', closeMenu);
+    }
+
+    navLinks.querySelectorAll('a, button').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+        closeMenu();
+      }
+    });
   }
+
 
   // Prevent dead anchor navigation (excluding brand-logo)
   document.querySelectorAll('a[href="#"]:not(.brand-logo)').forEach(link => {
@@ -270,25 +436,371 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Smooth scroll to top when brand logo is clicked (no instant snapping/teleporting)
+  document.querySelectorAll('.brand-logo, .footer-brand-link').forEach(logo => {
+    logo.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Close mobile menu if open
+      const navLinks = document.getElementById('nav-links');
+      const menuToggle = document.getElementById('menu-toggle');
+      if (navLinks && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
+      }
+
+      if (window.lerpScroll && window.lerpScroll.enabled) {
+        window.lerpScroll.scrollTo(0);
+      } else {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' });
+      }
+    });
+  });
+
+  // Buttery smooth scroll for in-page anchor links (Nasıl çalışır?, Hakkımızda, Bekleme listesi, vb.)
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href === '#' || href === '#!') return;
+
+    link.addEventListener('click', (e) => {
+      const targetId = href.substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (!targetEl) return;
+
+      e.preventDefault();
+
+      // Close mobile menu if open
+      const navLinks = document.getElementById('nav-links');
+      const menuToggle = document.getElementById('menu-toggle');
+      if (navLinks && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
+      }
+
+      // A section can point the jump at an inner element (e.g. the waitlist card)
+      const anchor = targetEl.querySelector('[data-scroll-anchor]') || targetEl;
+
+      // Focus the email field only after arriving, without letting focus() scroll the page
+      const input = targetId === 'bekleme-listesi' ? targetEl.querySelector('.wishlist-input') : null;
+      smoothScrollToElement(anchor, input ? () => input.focus({ preventScroll: true }) : null);
+    });
+  });
+
   // Initialize interactive navbar logo touch support
   initNavbarLogoInteraction();
+
+  // Initialize custom wishlist forms validation and design language feedback
+  initWishlistForms();
+
+  // Smooth open/close for the FAQ accordion
+  initFaqAccordion();
+
+  // KVKK notice opens in a dialog instead of a separate page
+  initLegalDialog();
 });
 
-// --- 4. Interactive Navbar Logo Touch Support ---
+// --- 7. Legal Dialog: loads kvkk.html's <main> once and shows it in a native <dialog> ---
+function initLegalDialog() {
+  const dialog = document.getElementById('legal-dialog');
+  const links = document.querySelectorAll('a[data-legal-modal]');
+  if (!dialog || !links.length || typeof dialog.showModal !== 'function') return; // fall back to the page
+
+  const body = dialog.querySelector('.legal-dialog-body');
+  const title = dialog.querySelector('.legal-dialog-title');
+  let loaded = false;
+
+  async function loadContent(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+    const main = doc.querySelector('main');
+    if (!main) throw new Error('kvkk.html içinde <main> yok');
+    main.querySelector('.legal-back')?.remove();
+    const h1 = main.querySelector('h1');
+    if (h1) {
+      title.textContent = h1.textContent;
+      h1.remove();
+    }
+    body.replaceChildren(...main.childNodes);
+    loaded = true;
+  }
+
+  function close() {
+    if (!dialog.open || dialog.classList.contains('is-closing')) return;
+    const finish = () => {
+      dialog.classList.remove('is-closing');
+      dialog.close();
+    };
+    if (prefersReducedMotion()) return finish();
+    dialog.classList.add('is-closing');
+    setTimeout(finish, 200);
+  }
+
+  links.forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!loaded) {
+        try {
+          await loadContent(link.href);
+        } catch (err) {
+          console.error('Aydınlatma metni yüklenemedi, sayfaya yönlendiriliyor:', err);
+          window.location.href = link.href;
+          return;
+        }
+      }
+      document.documentElement.classList.add('dialog-open');
+      dialog.showModal();
+      body.scrollTop = 0;
+    });
+  });
+
+  dialog.querySelector('.legal-dialog-close')?.addEventListener('click', close);
+  // Click on the dimmed backdrop (the dialog element itself, outside its content) closes it
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) close();
+  });
+  dialog.addEventListener('cancel', (e) => {
+    e.preventDefault(); // Esc: run the same animated close
+    close();
+  });
+  dialog.addEventListener('close', () => {
+    document.documentElement.classList.remove('dialog-open');
+  });
+}
+
+// --- 6. FAQ Accordion: animates native <details> height (keeps keyboard & screen-reader behavior) ---
+function initFaqAccordion() {
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const summary = item.querySelector('summary');
+    if (!summary) return;
+    let animation = null;
+
+    summary.addEventListener('click', (e) => {
+      if (prefersReducedMotion()) return; // native instant toggle
+      e.preventDefault();
+
+      const startHeight = item.offsetHeight;
+      const closing = item.open && !item.classList.contains('is-closing');
+
+      if (animation) animation.cancel();
+
+      if (closing) {
+        item.classList.add('is-closing');
+        const endHeight = summary.offsetHeight;
+        animation = item.animate(
+          { height: [`${startHeight}px`, `${endHeight}px`] },
+          { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+        );
+        animation.onfinish = () => {
+          item.open = false;
+          item.classList.remove('is-closing');
+          animation = null;
+        };
+      } else {
+        item.classList.remove('is-closing');
+        item.open = true;
+        const endHeight = item.offsetHeight;
+        animation = item.animate(
+          { height: [`${startHeight}px`, `${endHeight}px`] },
+          { duration: 380, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+        );
+        animation.onfinish = () => { animation = null; };
+      }
+    });
+  });
+}
+
+// --- 4. Interactive Navbar Logo (Hover to Play Forward, Unhover to Smoothly Revert) ---
 function initNavbarLogoInteraction() {
   const brandLogo = document.querySelector('.brand-logo');
   if (!brandLogo) return;
 
-  // Touch device responsiveness: brief tap toggles hover state then reverts
+  const svg = brandLogo.querySelector('.navbar-animated-logo') || brandLogo.querySelector('svg');
+  if (!svg) return;
+
+  const DURATION = 0.226; // Exact animation duration in seconds from the SVG SMIL dur="0.226s"
+  let currentTime = 0;
+  let rafId = null;
+  let isHovered = false;
+  let lastTimestamp = null;
+
+  // Ensure the native SMIL engine is paused right at t = 0
+  const freezeAtStart = () => {
+    try {
+      if (typeof svg.pauseAnimations === 'function') {
+        svg.pauseAnimations();
+      }
+      if (typeof svg.setCurrentTime === 'function') {
+        svg.setCurrentTime(0);
+      }
+    } catch (_) { }
+  };
+
+  freezeAtStart();
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', freezeAtStart, { once: true });
+  }
+
+  function step(timestamp) {
+    if (lastTimestamp === null) lastTimestamp = timestamp;
+    const delta = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    if (isHovered) {
+      currentTime = Math.min(DURATION, currentTime + delta);
+    } else {
+      currentTime = Math.max(0, currentTime - delta);
+    }
+
+    try {
+      if (typeof svg.setCurrentTime === 'function') {
+        svg.setCurrentTime(currentTime);
+      }
+    } catch (_) { }
+
+    const shouldContinue = isHovered ? (currentTime < DURATION) : (currentTime > 0);
+    if (shouldContinue) {
+      rafId = requestAnimationFrame(step);
+    } else {
+      rafId = null;
+      lastTimestamp = null;
+    }
+  }
+
+  function startTransition(hover) {
+    if (isHovered === hover) return;
+    isHovered = hover;
+    lastTimestamp = null;
+    if (!rafId) {
+      rafId = requestAnimationFrame(step);
+    }
+  }
+
+  brandLogo.addEventListener('mouseenter', () => startTransition(true));
+  brandLogo.addEventListener('mouseleave', () => startTransition(false));
+  brandLogo.addEventListener('focus', () => startTransition(true));
+  brandLogo.addEventListener('blur', () => startTransition(false));
+
+  // Touch devices: tap to play forward, then revert after hold
   let touchTimeout = null;
   brandLogo.addEventListener('touchstart', () => {
-    clearTimeout(touchTimeout);
-    brandLogo.classList.add('is-hovered');
-  }, { passive: true });
-
-  brandLogo.addEventListener('touchend', () => {
+    if (touchTimeout) clearTimeout(touchTimeout);
+    startTransition(true);
     touchTimeout = setTimeout(() => {
-      brandLogo.classList.remove('is-hovered');
-    }, 450);
+      startTransition(false);
+    }, (DURATION + 0.35) * 1000);
   }, { passive: true });
 }
+
+// --- 5. Custom Wishlist Form Validation & Design Language Feedback ---
+function initWishlistForms() {
+  document.querySelectorAll('.wishlist-form').forEach(form => {
+    const input = form.querySelector('.wishlist-input');
+    const wrap = form.closest('.cta-form-wrap');
+    const feedback = wrap ? wrap.querySelector('.form-feedback') : null;
+
+    if (!input) return;
+
+    // Clear error state immediately when user begins typing
+    input.addEventListener('input', () => {
+      input.classList.remove('has-error');
+      if (feedback && feedback.classList.contains('error')) {
+        feedback.style.display = 'none';
+      }
+    });
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!email) {
+        showError('Lütfen e-posta adresini gir.');
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        showError('Lütfen geçerli bir e-posta adresi gir.');
+        return;
+      }
+
+      const consent = form.querySelector('input[name="acik_riza"]');
+      if (consent && !consent.checked) {
+        showError('Devam etmek için onay kutusunu işaretle.', consent);
+        return;
+      }
+
+      // Send the address to the collection service set in the form's action attribute
+      const endpoint = form.getAttribute('action');
+      if (!endpoint) {
+        console.warn('Bekleme listesi formunun action adresi boş: e-posta hiçbir yere gönderilmedi.');
+        showError('Kayıt şu an alınamıyor. Lütfen info@cashif.app adresine yaz.');
+        return;
+      }
+
+      const originalLabel = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Gönderiliyor…';
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        // Google Apps Script always answers 200; the JSON body says whether the row was saved
+        const result = await response.json().catch(() => null);
+        if (result && result.ok === false) throw new Error(result.error || 'rejected');
+      } catch (err) {
+        console.error('Bekleme listesi kaydı gönderilemedi:', err);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+        showError('Kayıt gönderilemedi. Bağlantını kontrol edip tekrar dene.');
+        return;
+      }
+
+      // Success State
+      input.classList.remove('has-error');
+      form.style.display = 'none';
+      if (feedback) {
+        feedback.className = 'form-feedback success';
+        feedback.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Bekleme listesine eklendin! Lansman tarihini ilk sen öğreneceksin.
+        `;
+        feedback.style.display = 'inline-flex';
+      }
+    });
+
+    function showError(message, focusTarget = input) {
+      if (focusTarget === input && !input.classList.contains('has-error')) {
+        input.classList.add('has-error');
+      }
+      focusTarget.focus();
+      if (feedback) {
+        feedback.className = 'form-feedback error';
+        feedback.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          ${message}
+        `;
+        feedback.style.display = 'inline-flex';
+      }
+    }
+  });
+}
+

@@ -206,6 +206,7 @@ class LerpSmoothScroll {
 // --- Global Cache for Scroll Effect Elements ---
 let curveDivider = null;
 let curvePath = null;
+let lastCurveH = null;
 let platformSection = null;
 let platformHeader = null;
 
@@ -220,8 +221,10 @@ function updateAllScrollEffects() {
     let progress = (startY - rect.top) / (startY - endY);
     progress = Math.max(0, Math.min(1, progress));
 
-    const maxCurveDepth = 110;
+    const maxCurveDepth = 110; // control point; the drawn curve peaks at half of it, 55/120 = 46% of the box
     const curveH = maxCurveDepth * (1 - progress);
+    if (curveH === lastCurveH) return;
+    lastCurveH = curveH;
     curvePath.setAttribute('d', `M 0,0 Q 720,${curveH.toFixed(1)} 1440,0 L 1440,120 L 0,120 Z`);
   }
 }
@@ -382,8 +385,18 @@ document.addEventListener('DOMContentLoaded', () => {
   initPlatformShowcase();
 
   // Listen to native scroll/resize for fallback or trackpad/touch
-  window.addEventListener('scroll', updateAllScrollEffects, { passive: true });
-  window.addEventListener('resize', updateAllScrollEffects);
+  // One update per frame at most: redrawing the SVG path on every scroll event made mobile scrolling stutter
+  let effectsQueued = false;
+  const queueScrollEffects = () => {
+    if (effectsQueued) return;
+    effectsQueued = true;
+    requestAnimationFrame(() => {
+      effectsQueued = false;
+      updateAllScrollEffects();
+    });
+  };
+  window.addEventListener('scroll', queueScrollEffects, { passive: true });
+  window.addEventListener('resize', queueScrollEffects);
   updateAllScrollEffects();
 
   // Mobile Menu Toggle, Backdrop & Scroll Locking

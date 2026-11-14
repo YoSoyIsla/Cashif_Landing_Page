@@ -27,7 +27,7 @@ npm run build
 ## 📁 Project Structure
 
 ```text
-├── index.html             # Page markup on a 12-column grid
+├── index.html             # Page markup
 ├── kvkk.html              # KVKK notice (also shown in an in-page dialog)
 ├── style.css              # Design tokens, components & responsive rules
 ├── main.js                # Smooth scroll, sticky showcase, menu, waitlist form, FAQ & KVKK dialog
@@ -37,8 +37,8 @@ npm run build
 ├── google-apps-script/    # Waitlist → Google Sheets web app (see its README)
 ├── dist/                  # Production distribution output
 └── assets/
-    ├── images/            # Logo, partner logos, icons, social share image
-    │   └── 3d/            # 3D card compositions (2x resolution WebP)
+    ├── images/            # Logo, partner logos, favicons, social share image
+    │   └── icons/         # 3D icons as WebP at 800w and 1600w (served with srcset)
     └── fonts/             # Self-hosted Figtree (400, 500, 600, 700)
 ```
 
@@ -50,7 +50,7 @@ npm run build
 - **Hero:** *"Finansta kaybolma, cashif’le keşfet."* with the 3D discovery-path visual.
 - **Partners:** Bilgiyi Ticarileştirme Merkezi (BTM), Tech İstanbul.
 - **How it works:** Topics, simulation, certificate & perks with a sticky card on desktop.
-- **Features:** Streaks & Mint, weekly leagues & community.
+- **Features:** Streaks & Damla (reward earned for regular use), weekly leagues & community.
 - **Waitlist:** Email form with explicit consent; entries are written to Google Sheets via `google-apps-script/`.
 - **FAQ:** Animated accordion on native `<details>`.
 - **Footer:** Contact, social links, FAQ and KVKK notice.

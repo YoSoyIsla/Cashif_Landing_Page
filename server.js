@@ -23,15 +23,42 @@ function notifyReload() {
   }
 }
 
-// Watch files for instant build sync & live reload
+// Watch files for instant build sync & live reload.
+// macOS file watchers also fire when nothing changed: on startup they replay recent history, and iCloud/Finder
+// touch metadata (.DS_Store, xattrs). Reloading on every event made the page refresh in a loop, so a file only
+// counts as changed when its bytes differ from the copy already in dist/.
+const pendingChanges = new Set();
 let debounceTimeout = null;
+
+function hasRealChange(relPath) {
+  if (path.basename(relPath).startsWith('.')) return false;
+  const src = path.join(ROOT_DIR, relPath);
+  const dest = path.join(DIST_DIR, relPath);
+  let srcStat;
+  try {
+    srcStat = fs.statSync(src);
+  } catch (_) {
+    return false; // deleted or renamed away: nothing new to show
+  }
+  if (!srcStat.isFile()) return false;
+  try {
+    const destStat = fs.statSync(dest);
+    if (destStat.size === srcStat.size && fs.readFileSync(src).equals(fs.readFileSync(dest))) return false;
+  } catch (_) {}
+  return true;
+}
+
 function handleFileChange(relPath) {
+  pendingChanges.add(relPath);
   clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(() => {
-    syncFile(relPath);
-    console.log(`⚡ [Instant Build & Reload] Synced ${relPath} to dist/ and reloaded browser`);
+    const changed = [...pendingChanges].filter(hasRealChange);
+    pendingChanges.clear();
+    if (!changed.length) return;
+    changed.forEach(syncFile);
+    console.log(`⚡ [Instant Build & Reload] Synced ${changed.join(', ')} to dist/ and reloaded browser`);
     notifyReload();
-  }, 40);
+  }, 80);
 }
 
 ['index.html', 'style.css', 'main.js'].forEach(file => {
@@ -79,15 +106,13 @@ const LIVERELOAD_SCRIPT = `
 <!-- Instant Dev Live-Reload -->
 <script>
   (function() {
-    let source = new EventSource('/__livereload');
+    // One connection; EventSource reconnects by itself after a server restart
+    const source = new EventSource('/__livereload');
     source.onmessage = function(e) {
       if (e.data === 'reload') {
         console.log('⚡ Reloading page with latest build changes...');
         location.reload();
       }
-    };
-    source.onerror = function() {
-      setTimeout(() => new EventSource('/__livereload'), 1500);
     };
   })();
 </script>

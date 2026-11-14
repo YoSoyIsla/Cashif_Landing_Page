@@ -71,7 +71,8 @@ const MIME_TYPES = {
   '.woff': 'font/woff',
   '.ttf': 'font/ttf',
   '.ico': 'image/x-icon',
-  '.mp4': 'video/mp4'
+  '.mp4': 'video/mp4',
+  '.splinecode': 'application/octet-stream'
 };
 
 const LIVERELOAD_SCRIPT = `

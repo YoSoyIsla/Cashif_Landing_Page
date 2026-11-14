@@ -4,7 +4,7 @@ const path = require('path');
 const ROOT_DIR = __dirname;
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 
-// Helper to copy directory recursively
+// Helper to copy directory recursively (incremental)
 function copyDirSync(src, dest) {
   if (!fs.existsSync(src)) return;
   fs.mkdirSync(dest, { recursive: true });
@@ -17,7 +17,17 @@ function copyDirSync(src, dest) {
     if (entry.isDirectory()) {
       copyDirSync(srcPath, destPath);
     } else {
-      fs.copyFileSync(srcPath, destPath);
+      let shouldCopy = !fs.existsSync(destPath);
+      if (!shouldCopy) {
+        const sStat = fs.statSync(srcPath);
+        const dStat = fs.statSync(destPath);
+        if (sStat.mtimeMs > dStat.mtimeMs || sStat.size !== dStat.size) {
+          shouldCopy = true;
+        }
+      }
+      if (shouldCopy) {
+        fs.copyFileSync(srcPath, destPath);
+      }
     }
   }
 }
@@ -48,16 +58,24 @@ function syncFile(relativePath) {
 function buildAll(silent = false) {
   if (!silent) console.log('🚀 Building production distribution...');
 
-  if (fs.existsSync(DIST_DIR)) {
-    fs.rmSync(DIST_DIR, { recursive: true, force: true });
-  }
   fs.mkdirSync(DIST_DIR, { recursive: true });
 
   // 1. Copy root web files
   ['index.html', 'kvkk.html', 'manifest.webmanifest', 'style.css', 'main.js'].forEach(file => {
     const src = path.join(ROOT_DIR, file);
+    const dest = path.join(DIST_DIR, file);
     if (fs.existsSync(src)) {
-      fs.copyFileSync(src, path.join(DIST_DIR, file));
+      let shouldCopy = !fs.existsSync(dest);
+      if (!shouldCopy) {
+        const sStat = fs.statSync(src);
+        const dStat = fs.statSync(dest);
+        if (sStat.mtimeMs > dStat.mtimeMs || sStat.size !== dStat.size) {
+          shouldCopy = true;
+        }
+      }
+      if (shouldCopy) {
+        fs.copyFileSync(src, dest);
+      }
     }
   });
 

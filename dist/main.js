@@ -43,6 +43,11 @@ function smoothScrollToElement(el, onArrive) {
   setTimeout(settle, behavior === 'smooth' ? 1200 : 0);
 }
 
+function isSmartTV() {
+  if (typeof navigator === 'undefined') return false;
+  return /TV|SmartTV|Tizen|webOS|Web0S|GoogleTV|AppleTV|HbbTV|NetCast|Vewd/i.test(navigator.userAgent);
+}
+
 // --- 1. Smooth Lerp Scroll Engine (Linear Interpolation, No Motion Blur) ---
 class LerpSmoothScroll {
   constructor() {
@@ -67,8 +72,8 @@ class LerpSmoothScroll {
   }
 
   init() {
-    // Only on desktop pointer devices, and never when the visitor asked for reduced motion
-    if (window.matchMedia('(pointer: coarse)').matches || prefersReducedMotion()) {
+    // Only on desktop pointer devices, and never when the visitor asked for reduced motion or is on a Smart TV
+    if (window.matchMedia('(pointer: coarse)').matches || prefersReducedMotion() || isSmartTV()) {
       return;
     }
 
@@ -122,8 +127,8 @@ class LerpSmoothScroll {
   }
 
   onWheel(e) {
-    // Let an open dialog scroll its own content natively
-    if (document.querySelector('dialog[open]')) return;
+    // Let an open dialog or active mobile menu scroll its own content natively
+    if (document.querySelector('dialog[open]') || document.body.classList.contains('menu-open')) return;
     e.preventDefault();
     this.releaseTarget();
 
@@ -146,8 +151,9 @@ class LerpSmoothScroll {
     if (document.querySelector('dialog[open]')) return;
 
     let delta = 0;
-    if (e.key === 'ArrowDown') delta = 90;
-    else if (e.key === 'ArrowUp') delta = -90;
+    const arrowDelta = Math.max(90, Math.round(window.innerHeight * 0.18));
+    if (e.key === 'ArrowDown') delta = arrowDelta;
+    else if (e.key === 'ArrowUp') delta = -arrowDelta;
     else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) delta = window.innerHeight * 0.8;
     else if (e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) delta = -window.innerHeight * 0.8;
 
@@ -218,26 +224,6 @@ function updateAllScrollEffects() {
     const curveH = maxCurveDepth * (1 - progress);
     curvePath.setAttribute('d', `M 0,0 Q 720,${curveH.toFixed(1)} 1440,0 L 1440,120 L 0,120 Z`);
   }
-
-  // 2. Parallax Depth on Purple Section Only (White sections remain completely static & intact)
-  if (platformSection && platformHeader) {
-    if (window.innerWidth <= 1199.98) {
-      platformHeader.style.transform = 'none';
-    } else {
-      const platRect = platformSection.getBoundingClientRect();
-      if (platRect.top < vh && platRect.bottom > 0) {
-        // enterProgress: 0 when purple enters viewport, 1 when it reaches top
-        const enterProgress = Math.max(0, Math.min(1, (vh - platRect.top) / vh));
-        // Purple header smoothly floats upward with subtle parallax depth
-        const headerOffset = (1 - enterProgress) * 36;
-        platformHeader.style.transform = `translate3d(0, ${headerOffset.toFixed(1)}px, 0)`;
-      } else if (platRect.top >= vh) {
-        platformHeader.style.transform = 'translate3d(0, 36px, 0)';
-      } else {
-        platformHeader.style.transform = 'translate3d(0, 0, 0)';
-      }
-    }
-  }
 }
 
 // --- 2. Purple Platform Section Sticky Image Scroll Showcase ---
@@ -251,7 +237,7 @@ function initPlatformShowcase() {
 
   const stickyCol = showcase.querySelector('.showcase-sticky-col');
   const dots = showcase.querySelectorAll('.showcase-dots span');
-  const mobileQuery = window.matchMedia('(max-width: 1199.98px)');
+  const mobileQuery = window.matchMedia('(max-width: 1299.98px)');
   let activeIndex = -1;
   let scrubbing = false;
   let ticking = false;
@@ -511,39 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Smooth open/close for the FAQ accordion
   initFaqAccordion();
 
-  // Interactive 12-Column Grid Overlay Toggle (developer tool: local preview only)
-  const gridBtn = document.getElementById('grid-toggle-btn');
-  const gridOverlay = document.getElementById('grid-overlay');
-  const isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
-
-  if (gridBtn && gridOverlay && !isLocalPreview) {
-    gridBtn.remove();
-    gridOverlay.remove();
-  } else if (gridBtn && gridOverlay) {
-    gridBtn.hidden = false;
-    const updateBtnState = (isActive) => {
-      const label = gridBtn.querySelector('.grid-btn-label');
-      if (label) label.textContent = isActive ? '12-Col Grid: ON' : '12-Col Grid: OFF';
-      gridBtn.classList.toggle('is-active', isActive);
-      gridBtn.setAttribute('aria-pressed', isActive);
-    };
-
-    const toggleGrid = () => {
-      const isActive = gridOverlay.classList.toggle('active');
-      updateBtnState(isActive);
-    };
-
-    gridBtn.addEventListener('click', toggleGrid);
-
-    window.addEventListener('keydown', (e) => {
-      if (e.altKey && (e.key === 'g' || e.key === 'G')) {
-        toggleGrid();
-      }
-    });
-
-    updateBtnState(gridOverlay.classList.contains('active'));
-  }
-
   // KVKK notice opens in a dialog instead of a separate page
   initLegalDialog();
 });
@@ -659,36 +612,85 @@ function initFaqAccordion() {
   });
 }
 
-// --- 4. Interactive Navbar Logo (Native Animated SVG on Hover) ---
+// --- 4. Interactive Navbar Logo (Hover to Play Forward, Unhover to Smoothly Revert) ---
 function initNavbarLogoInteraction() {
   const brandLogo = document.querySelector('.brand-logo');
   if (!brandLogo) return;
 
-  const svg = brandLogo.querySelector('svg');
+  const svg = brandLogo.querySelector('.navbar-animated-logo') || brandLogo.querySelector('svg');
   if (!svg) return;
 
-  // Replay animation on hover
-  brandLogo.addEventListener('mouseenter', () => {
-    try {
-      if (typeof svg.setCurrentTime === 'function') {
-        svg.setCurrentTime(0);
-      }
-      if (typeof svg.unpauseAnimations === 'function') {
-        svg.unpauseAnimations();
-      }
-    } catch (_) {}
-  });
+  const DURATION = 0.226; // Exact animation duration in seconds from the SVG SMIL dur="0.226s"
+  let currentTime = 0;
+  let rafId = null;
+  let isHovered = false;
+  let lastTimestamp = null;
 
-  // Mobile touch: replay animation on tap
-  brandLogo.addEventListener('touchstart', () => {
+  // Ensure the native SMIL engine is paused right at t = 0
+  const freezeAtStart = () => {
     try {
+      if (typeof svg.pauseAnimations === 'function') {
+        svg.pauseAnimations();
+      }
       if (typeof svg.setCurrentTime === 'function') {
         svg.setCurrentTime(0);
       }
-      if (typeof svg.unpauseAnimations === 'function') {
-        svg.unpauseAnimations();
+    } catch (_) { }
+  };
+
+  freezeAtStart();
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', freezeAtStart, { once: true });
+  }
+
+  function step(timestamp) {
+    if (lastTimestamp === null) lastTimestamp = timestamp;
+    const delta = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    if (isHovered) {
+      currentTime = Math.min(DURATION, currentTime + delta);
+    } else {
+      currentTime = Math.max(0, currentTime - delta);
+    }
+
+    try {
+      if (typeof svg.setCurrentTime === 'function') {
+        svg.setCurrentTime(currentTime);
       }
-    } catch (_) {}
+    } catch (_) { }
+
+    const shouldContinue = isHovered ? (currentTime < DURATION) : (currentTime > 0);
+    if (shouldContinue) {
+      rafId = requestAnimationFrame(step);
+    } else {
+      rafId = null;
+      lastTimestamp = null;
+    }
+  }
+
+  function startTransition(hover) {
+    if (isHovered === hover) return;
+    isHovered = hover;
+    lastTimestamp = null;
+    if (!rafId) {
+      rafId = requestAnimationFrame(step);
+    }
+  }
+
+  brandLogo.addEventListener('mouseenter', () => startTransition(true));
+  brandLogo.addEventListener('mouseleave', () => startTransition(false));
+  brandLogo.addEventListener('focus', () => startTransition(true));
+  brandLogo.addEventListener('blur', () => startTransition(false));
+
+  // Touch devices: tap to play forward, then revert after hold
+  let touchTimeout = null;
+  brandLogo.addEventListener('touchstart', () => {
+    if (touchTimeout) clearTimeout(touchTimeout);
+    startTransition(true);
+    touchTimeout = setTimeout(() => {
+      startTransition(false);
+    }, (DURATION + 0.35) * 1000);
   }, { passive: true });
 }
 
